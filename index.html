@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="A practitioner's guide to causal inference — four methods compared on real data, with full Databricks notebooks."/>
+<title>Causal Inference Toolkit — Four Methods Compared</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:      #0d0e0f;
+  --paper:    #f5f2eb;
+  --paper2:   #ede9df;
+  --cream:    #faf8f3;
+  --accent:   #c8410a;
+  --accent2:  #1a5276;
+  --gold:     #b8860b;
+  --muted:    #6b6560;
+  --border:   #d4cfc5;
+  --mono:     'JetBrains Mono', monospace;
+  --serif:    'Playfair Display', Georgia, serif;
+  --sans:     'Epilogue', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.2rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cream);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.logo span { color: var(--accent); font-style: italic; }
+nav a {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  margin-left: 2rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+nav a:hover { color: var(--accent); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 88vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+.hero-left {
+  padding: 7rem 4rem 5rem 5rem;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px; height: 1px;
+  background: var(--accent);
+}
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  color: var(--ink);
+}
+h1 em {
+  color: var(--accent);
+  font-style: italic;
+}
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 480px;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+  line-height: 1.8;
+}
+.btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.8rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+}
+.btn-primary:hover { background: #a33508; }
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--ink); }
+
+.hero-right {
+  background: var(--ink);
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-right::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #c8410a18 0%, transparent 70%);
+}
+.code-window {
+  background: #161719;
+  border: 1px solid #2a2d35;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+.code-titlebar {
+  background: #1e2026;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #2a2d35;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #f0645a; }
+.dot-y { background: #f5a623; }
+.dot-g { background: #27c93f; }
+.code-filename {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: #6b7280;
+  margin-left: 0.5rem;
+}
+.code-body {
+  padding: 1.4rem 1.6rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.8;
+  color: #abb2bf;
+  overflow-x: auto;
+}
+.kw  { color: #c678dd; }
+.fn  { color: #61afef; }
+.str { color: #98c379; }
+.cm  { color: #5c6370; font-style: italic; }
+.num { color: #d19a66; }
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: #2a2d35;
+  border: 1px solid #2a2d35;
+  border-radius: 6px;
+  margin-top: 1.2rem;
+  overflow: hidden;
+}
+.stat-item {
+  background: #161719;
+  padding: 1rem 1.2rem;
+  text-align: center;
+}
+.stat-value {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: #e8e9ec;
+  display: block;
+  font-style: italic;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: #5c6370;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── SERIES TRACKER ── */
+.series {
+  padding: 5rem 5rem;
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+.section-sub {
+  color: var(--muted);
+  font-weight: 300;
+  margin-bottom: 3rem;
+  max-width: 560px;
+}
+.phases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0;
+  border: 1px solid var(--border);
+}
+.phase-card {
+  padding: 2rem 2rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  transition: background 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.phase-card:hover { background: var(--cream); }
+.phase-card:last-child { border-right: none; }
+.phase-num {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.8rem;
+}
+.phase-status {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.status-live   { background: #c8410a18; color: var(--accent); border: 1px solid #c8410a33; }
+.status-coming { background: var(--paper2); color: var(--muted); border: 1px solid var(--border); }
+.phase-name {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+.phase-desc {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.phase-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--muted);
+}
+
+/* ── CONCEPTS ── */
+.concepts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+}
+.concepts-left {
+  padding: 5rem;
+  border-right: 1px solid var(--border);
+}
+.concepts-right {
+  padding: 5rem;
+  background: var(--paper2);
+}
+.concept-row {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.concept-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.concept-num {
+  font-family: var(--serif);
+  font-size: 2rem;
+  color: var(--border);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 2.5rem;
+}
+.concept-title {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+}
+.concept-text { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+.why-box {
+  background: var(--ink);
+  color: white;
+  padding: 2rem 2.2rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+.why-box-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+}
+.why-box p {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: #c8cdd8;
+  font-weight: 300;
+}
+
+/* ── ARTICLE (Phase 1) ── */
+.article-section {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.article-section h2 {
+  font-family: var(--serif);
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+.article-section .deck {
+  color: var(--muted);
+  font-size: 1.05rem;
+  font-weight: 300;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.article-section h3 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  margin: 2.5rem 0 0.8rem;
+  letter-spacing: -0.01em;
+}
+.article-section p {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: #2a2a2a;
+  margin-bottom: 1.2rem;
+}
+.article-section p strong { color: var(--ink); }
+.pull-quote {
+  border-left: 3px solid var(--accent);
+  padding: 0.8rem 1.5rem;
+  margin: 2rem 0;
+  background: var(--paper2);
+}
+.pull-quote p {
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  font-style: italic;
+  color: var(--ink);
+  margin: 0;
+}
+.callout {
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+  font-size: 0.87rem;
+}
+.callout strong { color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+pre, code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+pre {
+  background: var(--ink);
+  color: #abb2bf;
+  padding: 1.4rem 1.6rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  line-height: 1.7;
+}
+code {
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  padding: 0.1em 0.4em;
+  border-radius: 2px;
+  color: var(--accent2);
+  font-size: 0.82em;
+}
+.formula {
+  background: var(--ink);
+  color: #c678dd;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+  text-align: center;
+  margin: 1.5rem 0;
+  letter-spacing: 0.03em;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.83rem;
+}
+th {
+  background: var(--ink);
+  color: #e8e9ec;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tr:hover td { background: var(--paper2); }
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+.series-tag {
+  background: var(--accent);
+  color: white;
+  padding: 0.2rem 0.7rem;
+  border-radius: 2px;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+/* ── FIGURES ── */
+.fig {
+  margin: 2.2rem 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--paper2);
+}
+.fig img {
+  width: 100%;
+  display: block;
+}
+.fig-placeholder {
+  width: 100%;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper2);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.fig-placeholder svg { opacity: 0.3; }
+.fig-caption {
+  padding: 0.65rem 1rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.5;
+  border-top: 1px solid var(--border);
+  background: var(--cream);
+}
+.fig-caption strong { color: var(--ink); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 3rem 5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  border-top: 1px solid var(--border);
+}
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero, .concepts { grid-template-columns: 1fr; }
+  .hero-left { padding: 3rem 2rem; }
+  .hero-right { padding: 2.5rem 2rem; }
+  .hero-right::before { display: none; }
+  .concepts-left, .concepts-right { padding: 3rem 2rem; }
+  .series, header { padding: 3rem 2rem; }
+  nav { display: none; }
+  footer { flex-direction: column; gap: 1rem; padding: 2rem; }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-left > * {
+  animation: fadeUp 0.6s ease both;
+}
+.hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-left > *:nth-child(2) { animation-delay: 0.2s; }
+.hero-left > *:nth-child(3) { animation-delay: 0.3s; }
+.hero-left > *:nth-child(4) { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Causal <span>Inference</span> Toolkit</div>
+  <nav>
+    <a href="#series">Series</a>
+    <a href="#phase1">Phase 1</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" target="_blank">GitHub</a>
+    <a href="https://medium.com/@ajay-deshpande" target="_blank">Medium</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">A practitioner's series</div>
+    <h1>Causal Inference:<br/><em>Four Methods</em><br/>Compared</h1>
+    <p class="hero-sub">Most data science answers the wrong question. Correlation is easy to find; causation is what decisions are made on. This series builds four causal methods from scratch — on real data, in real notebooks.</p>
+    <div class="btn-group">
+      <a href="#phase1" class="btn btn-primary">Read Phase 1</a>
+      <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" class="btn btn-secondary" target="_blank">View Notebooks</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="code-window">
+      <div class="code-titlebar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="code-filename">notebooks/A-B%20Testing.py</span>
+      </div>
+      <div class="code-body">
+<span class="cm"># Estimate ATE — three equivalent ways</span>
+
+<span class="cm"># A: Difference in means</span>
+<span class="kw">ATE</span> = Y1.mean() - Y0.mean()
+
+<span class="cm"># B: OLS regression</span>
+model = <span class="fn">OLS</span>(purchased, [<span class="str">'treatment'</span>, <span class="str">'age'</span>]).fit()
+<span class="kw">ATE</span>   = model.params[<span class="str">'treatment'</span>]
+
+<span class="cm"># C: Bootstrap 95% CI</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2000</span>):
+    s = df.<span class="fn">sample</span>(n=N, replace=<span class="kw">True</span>)
+    boot_ates[i] = s[s.treatment==<span class="num">1</span>].purchased.<span class="fn">mean</span>() \
+                 - s[s.treatment==<span class="num">0</span>].purchased.<span class="fn">mean</span>()
+
+ci = np.<span class="fn">percentile</span>(boot_ates, [<span class="num">2.5</span>, <span class="num">97.5</span>])
+
+<span class="cm"># Log to MLflow</span>
+mlflow.<span class="fn">log_metric</span>(<span class="str">"ATE"</span>, <span class="fn">round</span>(<span class="kw">ATE</span>, <span class="num">5</span>))
+mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_lower"</span>, ci[<span class="num">0</span>])
+mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_upper"</span>, ci[<span class="num">1</span>])
+      </div>
+    </div>
+    <div class="stat-strip">
+      <div class="stat-item">
+        <span class="stat-value">4</span>
+        <span class="stat-label">Methods</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">3</span>
+        <span class="stat-label">Datasets</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">7</span>
+        <span class="stat-label">Phases</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERIES TRACKER -->
+<section class="series" id="series">
+  <div class="section-label">The series</div>
+  <h2 class="section-title">Seven phases, one cohesive project</h2>
+  <p class="section-sub">Each phase introduces a new method by showing what the previous method couldn't handle — building genuine intuition for when and why each approach exists.</p>
+
+  <div class="phases">
+    <a class="phase-card" href="#phase1">
+      <div class="phase-num">PHASE 01</div>
+      <div class="phase-status status-live">● Live</div>
+      <div class="phase-name">A/B Testing</div>
+      <p class="phase-desc">The gold standard. Randomization eliminates confounders by design. Build intuition for what a causal estimate actually means before the math gets complicated.</p>
+      <div class="phase-tags">
+        <span class="tag">ATE</span>
+        <span class="tag">RCT</span>
+        <span class="tag">Bootstrap CI</span>
+        <span class="tag">MLflow</span>
+      </div>
+    </a>
+    <a class="phase-card" href="#">
+      <div class="phase-num">PHASE 02</div>
+      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-name">Difference-in-Differences</div>
+      <p class="phase-desc">When you can't randomize but have pre- and post-treatment observations. LaLonde job training dataset. Parallel trends assumption and how to test it.</p>
+      <div class="phase-tags">
+        <span class="tag">ATT</span>
+        <span class="tag">LaLonde</span>
+        <span class="tag">Parallel Trends</span>
+      </div>
+    </a>
+    <a class="phase-card" href="#">
+      <div class="phase-num">PHASE 03</div>
+      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-name">Propensity Score Matching</div>
+      <p class="phase-desc">Match treated and control units on their probability of receiving treatment. Love plots, SMD, covariate balance — LaLonde revisited.</p>
+      <div class="phase-tags">
+        <span class="tag">ATT</span>
+        <span class="tag">PSM</span>
+        <span class="tag">Love Plot</span>
+      </div>
+    </a>
+    <a class="phase-card" href="#">
+      <div class="phase-num">PHASE 04</div>
+      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-name">Synthetic Control</div>
+      <p class="phase-desc">Build a counterfactual from a weighted blend of donor units. Quadratic programming, pre-period fit, and placebo-in-space inference.</p>
+      <div class="phase-tags">
+        <span class="tag">ATT</span>
+        <span class="tag">QP Optimization</span>
+        <span class="tag">Placebo</span>
+      </div>
+    </a>
+    <a class="phase-card" href="#">
+      <div class="phase-num">PHASE 05</div>
+      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-name">Regression Discontinuity</div>
+      <p class="phase-desc">Exploit a score threshold as quasi-random assignment. McCrary density test, bandwidth selection, local linear regression.</p>
+      <div class="phase-tags">
+        <span class="tag">LATE</span>
+        <span class="tag">McCrary Test</span>
+        <span class="tag">Bandwidth</span>
+      </div>
+    </a>
+    <a class="phase-card" href="#">
+      <div class="phase-num">PHASE 06–07</div>
+      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-name">DoWhy + Final Comparison</div>
+      <p class="phase-desc">Formalize causal graphs with DoWhy. Compare all four method estimates side by side. When do they converge — and when should they diverge?</p>
+      <div class="phase-tags">
+        <span class="tag">DoWhy</span>
+        <span class="tag">DAG</span>
+        <span class="tag">Refutation</span>
+        <span class="tag">MLflow</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- WHY THIS MATTERS -->
+<section class="concepts">
+  <div class="concepts-left">
+    <div class="section-label">The problem</div>
+    <h2 class="section-title" style="font-family:var(--serif);font-size:1.9rem;margin-bottom:1rem;">Why correlation keeps getting people fired</h2>
+    <div class="concept-row">
+      <div class="concept-num">1</div>
+      <div>
+        <div class="concept-title">Correlation ≠ Causation</div>
+        <p class="concept-text">Ice cream sales and drowning rates are correlated. Neither causes the other — summer does both. The same logic applies to most business metrics.</p>
+      </div>
+    </div>
+    <div class="concept-row">
+      <div class="concept-num">2</div>
+      <div>
+        <div class="concept-title">Selection Bias</div>
+        <p class="concept-text">Users who click on premium features are not comparable to those who don't. The click caused the difference, or did a pre-existing difference cause the click?</p>
+      </div>
+    </div>
+    <div class="concept-row">
+      <div class="concept-num">3</div>
+      <div>
+        <div class="concept-title">The Fundamental Problem</div>
+        <p class="concept-text">You can only observe each unit in one state — treated or untreated. The counterfactual ("what would have happened otherwise?") is always missing. Every causal method is a different strategy to reconstruct it.</p>
+      </div>
+    </div>
+  </div>
+  <div class="concepts-right">
+    <div class="section-label">The framework</div>
+    <h2 class="section-title" style="font-family:var(--serif);font-size:1.9rem;margin-bottom:1.5rem;">Choose your method by your data</h2>
+    <div class="why-box">
+      <div class="why-box-label">Decision guide</div>
+      <p>Can you randomize? → <strong style="color:white">A/B Test</strong><br/>
+      Have panel data + control group? → <strong style="color:white">DiD</strong><br/>
+      Have rich covariates, no panel? → <strong style="color:white">PSM</strong><br/>
+      One treated aggregate unit? → <strong style="color:white">Synthetic Control</strong><br/>
+      Score-based treatment cutoff? → <strong style="color:white">Regression Discontinuity</strong></p>
+    </div>
+    <table>
+      <tr><th>Method</th><th>Estimand</th><th>Key Assumption</th></tr>
+      <tr><td>A/B Test</td><td>ATE</td><td>Randomization</td></tr>
+      <tr><td>DiD</td><td>ATT</td><td>Parallel Trends</td></tr>
+      <tr><td>PSM</td><td>ATT</td><td>No hidden confounders</td></tr>
+      <tr><td>Synthetic Control</td><td>ATT</td><td>Pre-period fit</td></tr>
+      <tr><td>RD</td><td>LATE</td><td>No manipulation</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- PHASE 1 ARTICLE -->
+<div id="phase1">
+<article class="article-section">
+
+  <div class="article-meta">
+    <span class="series-tag">SERIES · PART 1 OF 7</span>
+    <span>A/B Testing &amp; RCT</span>
+    <span>~18 min read</span>
+    <span>Databricks · Python</span>
+  </div>
+
+  <h2>Why A/B Testing is the Gold Standard — and What Breaks When You Can't Use It</h2>
+  <p class="deck">Before learning four causal methods, you need to understand the one method that needs no assumptions. Then you need to see it fail. That's what this phase is about.</p>
+
+  <h3>Start with a question, not a method</h3>
+  <p>Your team redesigned a product page. Someone in a Monday meeting says "let's check if the new page performs better." You pull a report showing users who saw the new page converted at 13%, versus 10% for the old page. A three percentage point lift. Ship it?</p>
+  <p>Not yet. That 3pp difference has two possible explanations: the new design caused more purchases, or the users who happened to see the new design were already more likely to buy. You cannot tell which is true from that number alone. This is the fundamental problem of causal inference — and it comes up in every business decision involving data.</p>
+
+  <div class="pull-quote"><p>"Randomization doesn't just control for confounders you can think of. It controls for confounders you haven't thought of yet."</p></div>
+
+  <h3>What makes an A/B test causal</h3>
+  <p>An A/B test is a <strong>Randomized Controlled Trial (RCT)</strong>. You randomly assign each user to either the old page (control) or the new page (treatment). The word "randomly" is doing enormous work here.</p>
+  <p>When assignment is truly random, every characteristic of a user — their age, their purchase history, their device, their income, their mood — is equally distributed across both groups <em>in expectation</em>. The treated and control groups are statistically identical before the experiment starts. So any difference in outcomes afterwards can only come from one place: the thing you changed.</p>
+  <p>This is why the naive mean difference <em>is</em> the causal effect in a proper A/B test:</p>
+
+  <div class="formula">ATE = E[Y | D=1] − E[Y | D=0] = Ȳ_treated − Ȳ_control</div>
+
+  <p>No adjustment. No modeling. No assumptions beyond "the randomization actually worked." This simplicity is the gold standard everyone else is trying to approximate.</p>
+
+  <h3>The estimand: ATE</h3>
+  <p>We're estimating the <strong>Average Treatment Effect (ATE)</strong> — the average causal effect across the entire user population, both those who would be treated and those who wouldn't. Formally:</p>
+  <div class="formula">ATE = E[Y(1) − Y(0)]</div>
+  <p>Where Y(1) is a user's outcome if they see the new page, and Y(0) is their outcome if they see the old page. The problem: you never observe both for the same user. Randomization lets you reconstruct this average across groups.</p>
+
+  <h3>Building the dataset</h3>
+  <p>We simulate 10,000 users with a known true effect of exactly 3 percentage points. Crucially, we also include covariates — age, device type, prior visits — that will become confounders in Phase 3 (PSM). This is intentional: one dataset, used across multiple phases, each time exploiting different structure.</p>
+
+  <pre><span style="color:#c678dd">TRUE_EFFECT</span> = <span style="color:#d19a66">0.03</span>  <span style="color:#5c6370"># 3pp lift — the answer we want to recover</span>
+
+<span style="color:#5c6370"># Random assignment — the core of an A/B test</span>
+treatment = np.random.binomial(<span style="color:#d19a66">1</span>, <span style="color:#d19a66">0.5</span>, N)
+
+<span style="color:#5c6370"># Outcome probability — treatment adds 3pp on top of covariates</span>
+log_odds = (
+    <span style="color:#d19a66">-2.5</span>
+    + TRUE_EFFECT * <span style="color:#d19a66">4</span> * treatment
+    + <span style="color:#d19a66">0.02</span> * (age - <span style="color:#d19a66">35</span>)
+    + <span style="color:#d19a66">0.05</span> * prior_visits
+)
+purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log_odds), N)</pre>
+
+  <p>The DGP (data generating process) is the true model that created your data. In real life you never know it. Here you do — which is what makes simulation so powerful for learning. Your estimator should recover <code>0.03</code>.</p>
+
+  <h3>Three estimators, same answer</h3>
+  <p>We estimate ATE three different ways — not because we need to, but to build intuition for what an estimator actually is. In a proper RCT, all three converge on the same number.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase1/purchase_rates.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Purchase rates by group with 95% confidence intervals"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase1/purchase_rates.png</span>
+      <span style="font-size:0.65rem;opacity:0.7">Screenshot this from your notebook Cell 6 output and commit to the repo</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 1.</strong> Purchase rates for control (old page) and treatment (new page) groups with 95% confidence intervals. The 3pp gap matches the true effect baked into the simulation — a sanity check that the estimator is working correctly.</div>
+  </figure>
+
+  <div class="callout"><strong>Key insight</strong>Adding covariates to the OLS regression makes the standard error smaller (more precise) but barely changes the point estimate. That's because covariates are uncorrelated with treatment under randomization — they explain residual variance in Y but not the treatment effect. In Phase 3, adding covariates will change the estimate dramatically. That difference is worth internalizing now.</div>
+
+  <h3>Confidence intervals: analytical vs bootstrap</h3>
+  <p>A point estimate without an interval is incomplete. We compute CIs two ways: analytically (from OLS standard errors, assumes normality) and via bootstrap (model-free, resamples data 2,000 times). Both give similar results because our sample is large. The bootstrap becomes essential in smaller samples or non-standard estimands.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase1/bootstrap_distribution.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Bootstrap distribution of ATE across 2000 resamples"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase1/bootstrap_distribution.png</span>
+      <span style="font-size:0.65rem;opacity:0.7">Screenshot this from your notebook Cell 6 output and commit to the repo</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 2.</strong> Bootstrap distribution of the ATE across 2,000 resamples. The distribution is centered on the estimated effect (~3pp), with the shaded region showing the 95% confidence interval. The red dashed line marks the true effect — confirming accurate recovery.</div>
+  </figure>
+
+  <h3>The most important cell: breaking the experiment</h3>
+  <p>We deliberately remove randomization and re-run the same analysis. Younger, more engaged users now self-select into the treatment group. The naive estimate inflates to roughly 6–8 percentage points — more than double the true 3pp effect. The SMD (Standardized Mean Difference) on age and prior visits jumps from near zero to 0.3+.</p>
+  <p>This is not a hypothetical. This is exactly what the LaLonde dataset in Phase 2 looks like. Workers who chose to enroll in job training were already different from those who didn't. The naive estimate is biased by exactly this mechanism.</p>
+
+  <div class="pull-quote"><p>"Without randomization, the naive estimate was 2× the true effect. That's not noise — that's selection bias, and it will mislead every decision made from it."</p></div>
+
+  <figure class="fig">
+    <img src="assets/plots/phase1/covariate_balance.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Covariate balance: SMD before and after breaking randomization"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase1/covariate_balance.png</span>
+      <span style="font-size:0.65rem;opacity:0.7">Screenshot this from your notebook Cell 6 output and commit to the repo</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 3.</strong> Standardized Mean Difference (SMD) for each covariate in the proper A/B test (left) versus the broken experiment (right). In a properly randomized test, all SMDs sit near zero — the groups are balanced. After introducing selection bias, SMD on age and prior visits jumps above 0.3, revealing the imbalance that inflates the naive estimate.</div>
+  </figure>
+
+  <h3>Where the gold standard breaks down</h3>
+  <p>Randomization eliminates confounders — but only if the experiment is run correctly. In practice, A/B tests fail more often from execution mistakes than from bad statistical design. These are the four ways a well-intentioned experiment produces a wrong answer.</p>
+
+  <h4 style="font-family:var(--serif);font-size:1rem;margin:1.8rem 0 0.5rem;color:var(--ink)">1. Peeking — stopping the experiment early</h4>
+  <p>You launch a test, check the dashboard two days later, see p=0.03, and stop. The problem: p-values are designed to be interpreted at a single pre-specified sample size. Checking repeatedly — at day 1, day 2, day 3 — gives you multiple chances to cross the significance threshold by random chance. With 20 peeks, your actual false positive rate climbs from 5% to roughly 40%. You ship a change that did nothing, or worse, harmed users, with the full confidence of a "statistically significant" result.</p>
+  <p>The fix: commit to a sample size before the experiment starts and don't stop early. If your team genuinely needs continuous monitoring, use sequential testing methods — always-valid p-values or Bayesian frameworks — which are designed for this use case.</p>
+
+  <h4 style="font-family:var(--serif);font-size:1rem;margin:1.8rem 0 0.5rem;color:var(--ink)">2. Insufficient power — not knowing your sample size</h4>
+  <p>An underpowered experiment produces false negatives: your test finds "no effect" and you don't ship a change that would have genuinely helped users. Power analysis answers a single question — how many users do I need? — and requires four inputs you should know before touching any data: baseline conversion rate, minimum detectable effect (the smallest lift you'd actually care about), significance level (α, usually 0.05), and desired power (1−β, usually 0.80).</p>
+  <p>These four inputs produce a required sample size per group. The practical failure: teams skip this step, run a test for one week because that feels right, and conclude "no effect" from a sample that was never large enough to detect one. An underpowered non-result is not a result.</p>
+
+  <div class="callout"><strong>MDE is a business decision, not a statistical one</strong>The minimum detectable effect should be set based on what lift is actually worth shipping. A 0.01pp improvement may not justify engineering time; a 0.5pp improvement might. Set it before the experiment — not after you see the data.</div>
+
+  <h4 style="font-family:var(--serif);font-size:1rem;margin:1.8rem 0 0.5rem;color:var(--ink)">3. P-hacking and multiple comparisons</h4>
+  <p>You designed the experiment to measure purchase rate. But your dashboard shows 15 metrics. Three are significant. You report those. This is p-hacking — not necessarily malicious, but statistically identical to running 15 experiments and showing the best result. At α=0.05, you expect one false positive for every 20 tests by pure chance. With 15 metrics, the probability of at least one spurious significant result is around 54%.</p>
+  <p>The fix: pre-register your primary metric before the experiment starts. That's the one that drives the shipping decision. Secondary metrics are exploratory — they generate hypotheses for future tests, not conclusions from this one. When you do need to test multiple metrics formally, apply Bonferroni correction (divide α by the number of tests) or Benjamini-Hochberg (controls false discovery rate, less conservative). Your analysis plan should exist before you see the data.</p>
+
+  <h4 style="font-family:var(--serif);font-size:1rem;margin:1.8rem 0 0.5rem;color:var(--ink)">4. Novelty effects — users responding to change, not improvement</h4>
+  <p>Your new design shows a 3pp lift in week one. You ship it. Two months later, conversion is back to baseline. What happened: users clicked the new design because it was different — not because it was better. The novelty wore off. The A/B test captured a real short-term effect that wasn't the long-term effect you cared about.</p>
+  <p>Novelty effects are most common with UI changes — new layouts, colors, navigation patterns — and less common with structural changes like pricing or checkout flow, where users engage with the mechanism rather than noticing something different. The diagnostic: segment your treatment effect by how long a user has been in the experiment. If new entrants show a large effect and users who've been in the test for two or three weeks show near zero, you're likely measuring novelty. The fix is usually to run the experiment longer — but this requires having done the power analysis first, so you knew how long "long enough" was before you started.</p>
+
+  <div class="callout"><strong>The common thread</strong>All four failures produce a number that looks like a causal estimate but isn't one. Peeking gives you false positives. Insufficient power gives you false negatives. P-hacking gives you cherry-picked results. Novelty gives you a transient effect mistaken for a permanent one. The gold standard is only gold if the execution matches the design.</div>
+
+  <h3>What you should take from Phase 1</h3>
+  <p>Randomization is the only method that requires no assumptions about confounders — because it eliminates them by design. Every other method in this series is an attempt to approximate randomization when it's unavailable. DiD uses time variation. PSM uses observed covariates. Synthetic Control uses donor units. RD uses a threshold. Each approach makes a different assumption, and each assumption can be tested — but none of them is as clean as what you built here.</p>
+  <p>The discomfort you felt in the "broken experiment" cell — that feeling of not knowing whether your estimate is real — is what motivates the next four phases.</p>
+
+  <div class="callout"><strong>Next: Phase 2 — Difference-in-Differences</strong>The LaLonde dataset has no randomization. Workers self-selected into training. But we have earnings data from before and after the program — and a comparison group that didn't receive training. If the two groups would have trended the same way without treatment, we can difference out the selection bias. That's DiD. Coming next.</div>
+
+  <p style="margin-top:2rem">
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/A-B%20Testing.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+  </p>
+
+</article>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>Causal Inference Toolkit · Built in public</span>
+  <span>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" target="_blank">GitHub</a> ·
+    <a href="https://medium.com/@ajay-deshpande" target="_blank">Medium</a> ·
+    <a href="https://linkedin.com/in/ajay-deshpande" target="_blank">LinkedIn</a>
+  </span>
+</footer>
+
+</body>
+</html>

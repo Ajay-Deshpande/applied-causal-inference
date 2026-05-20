@@ -1,2 +1,24 @@
-# applied-causal-inference
-Hands-on causal inference series using simulations or practical datasets in Python. Covers A/B testing, DiD (Difference in Differences), PSM (Propensity Score Matching), Synthetic Control, DoWhy and more...
+# Applied Causal Inference
+
+A practitioner's series implementing causal inference methods from scratch —
+on real datasets, in Databricks, with MLflow tracking.
+
+**Read the series:** https://Ajay-Deshpande.github.io/applied-causal-inference/
+**Medium:** https://medium.com/@ajay-deshpande
+
+## Notebooks
+
+| Phase | Method | Dataset | Status |
+|-------|--------|---------|--------|
+| 1 | A/B Testing / RCT | Simulated e-commerce | ✓ Live |
+| 2 | Difference-in-Differences | LaLonde (1986) | Coming |
+| 3 | Propensity Score Matching | LaLonde (1986) | Coming |
+| 4 | Synthetic Control | Simulated state panel | Coming |
+| 5 | Regression Discontinuity | Simulated scholarship | Coming |
+| 6 | DoWhy + Causal Graphs | LaLonde (1986) | Coming |
+| 7 | Final Comparison | LaLonde (1986) | Coming |
+
+## Requirements
+- Databricks Runtime 13.0+
+- Python 3.9+
+- `pip install scipy statsmodels mlflow dowhy econml`
