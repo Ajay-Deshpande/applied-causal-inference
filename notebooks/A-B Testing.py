@@ -296,11 +296,11 @@ else:
 #   (b) Bootstrap distribution of the ATE
 #   (c) Covariate balance (verifying randomization worked)
 
-fig, axes = plt.subplots(1, 3, figsize=(16, 5))
-fig.suptitle("A/B Test Results", fontsize=14, fontweight='bold', y=1.01)
+fig, ax = plt.subplots(figsize=(5,5))
+# fig.suptitle("A/B Test Results", fontsize=14, fontweight='bold', y=1.01)
 
 # ── Plot A: Purchase rates with CI bars ──────────────────────────────────────
-ax = axes[0]
+# ax = axes[0]
 
 groups      = ['Control\n(old page)', 'Treatment\n(new page)']
 rates       = [ctrl_rate, treat_rate]
@@ -337,9 +337,12 @@ ax.set_ylabel("Purchase rate")
 ax.set_ylim(0, max(rates) * 1.25)
 ax.axhline(ctrl_rate, color='#5b8dd9', linestyle='--', alpha=0.4, linewidth=1)
 ax.spines[['top', 'right']].set_visible(False)
+plt.savefig('../assets/plots/purchase_rates.png', dpi=150, bbox_inches='tight')
 
 # ── Plot B: Bootstrap distribution ───────────────────────────────────────────
-ax = axes[1]
+fig, ax = plt.subplots(figsize=(5,5))
+
+# ax = axes[1]
 
 ax.hist(boot_ates, bins=60, color='#7fb3d3', edgecolor='white', linewidth=0.3)
 ax.axvline(boot_ates.mean(),  color='#333',  linestyle='-',  linewidth=2,
@@ -358,9 +361,11 @@ ax.set_xlabel("Estimated ATE")
 ax.set_ylabel("Frequency")
 ax.legend(fontsize=8)
 ax.spines[['top', 'right']].set_visible(False)
+plt.savefig('../assets/plots/bootstrap_distribution.png', dpi=150, bbox_inches='tight')
 
 # ── Plot C: Covariate balance ────────────────────────────────────────────────
-ax = axes[2]
+fig, ax = plt.subplots(figsize=(5,5))
+# ax = axes[2]
 
 # Standardized mean difference for age and prior_visits
 covariates = ['age', 'prior_visits']
@@ -387,7 +392,7 @@ ax.set_xlim(0, 0.15)
 ax.spines[['top', 'right']].set_visible(False)
 
 plt.tight_layout()
-plt.savefig('/tmp/ab_test_results.png', dpi=150, bbox_inches='tight')
+plt.savefig('../assets/plots/covariate_balance.png', dpi=150, bbox_inches='tight')
 plt.show()
 print("✓ Plots saved")
 
