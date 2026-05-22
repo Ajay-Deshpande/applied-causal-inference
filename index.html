@@ -602,6 +602,7 @@ footer a:hover { color: var(--accent); }
   <nav>
     <a href="#series">Series</a>
     <a href="#phase1">Phase 1</a>
+    <a href="#phase2">Phase 2</a>
     <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" target="_blank">GitHub</a>
     <a href="https://medium.com/@ajay-deshpande" target="_blank">Medium</a>
   </nav>
@@ -614,7 +615,7 @@ footer a:hover { color: var(--accent); }
     <h1>Causal Inference:<br/><em>Four Methods</em><br/>Compared</h1>
     <p class="hero-sub">Most data science answers the wrong question. Correlation is easy to find; causation is what decisions are made on. This series builds four causal methods from scratch — on real data, in real notebooks.</p>
     <div class="btn-group">
-      <a href="#phase1" class="btn btn-primary">Read Phase 1</a>
+      <a href="#phase2" class="btn btn-primary">Read Latest Phase</a>
       <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" class="btn btn-secondary" target="_blank">View Notebooks</a>
     </div>
   </div>
@@ -652,7 +653,7 @@ mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_upper"</span>, c
     </div>
     <div class="stat-strip">
       <div class="stat-item">
-        <span class="stat-value">4</span>
+        <span class="stat-value">5</span>
         <span class="stat-label">Methods</span>
       </div>
       <div class="stat-item">
@@ -660,7 +661,7 @@ mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_upper"</span>, c
         <span class="stat-label">Datasets</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value">7</span>
+        <span class="stat-value">9</span>
         <span class="stat-label">Phases</span>
       </div>
     </div>
@@ -670,76 +671,98 @@ mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_upper"</span>, c
 <!-- SERIES TRACKER -->
 <section class="series" id="series">
   <div class="section-label">The series</div>
-  <h2 class="section-title">Seven phases, one cohesive project</h2>
-  <p class="section-sub">Each phase introduces a new method by showing what the previous method couldn't handle — building genuine intuition for when and why each approach exists.</p>
+  <h2 class="section-title">Nine phases, one cohesive project</h2>
+  <p class="section-sub">Each phase introduces a new method by showing what the previous one couldn't handle — building genuine intuition for when and why each approach exists.</p>
 
   <div class="phases">
     <a class="phase-card" href="#phase1">
       <div class="phase-num">PHASE 01</div>
       <div class="phase-status status-live">● Live</div>
       <div class="phase-name">A/B Testing</div>
-      <p class="phase-desc">The gold standard. Randomization eliminates confounders by design. Build intuition for what a causal estimate actually means before the math gets complicated.</p>
+      <p class="phase-desc">The gold standard. Randomization eliminates confounders by design. Build intuition for what a causal estimate means — and see what happens when you break the experiment.</p>
       <div class="phase-tags">
-        <span class="tag">ATE</span>
-        <span class="tag">RCT</span>
-        <span class="tag">Bootstrap CI</span>
-        <span class="tag">MLflow</span>
+        <span class="tag">ATE</span><span class="tag">RCT</span>
+        <span class="tag">Bootstrap CI</span><span class="tag">MLflow</span>
       </div>
     </a>
-    <a class="phase-card" href="#">
+    <a class="phase-card" href="#phase2">
       <div class="phase-num">PHASE 02</div>
-      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-status status-live">● Live</div>
       <div class="phase-name">Difference-in-Differences</div>
-      <p class="phase-desc">When you can't randomize but have pre- and post-treatment observations. LaLonde job training dataset. Parallel trends assumption and how to test it.</p>
+      <p class="phase-desc">LaLonde job training dataset. Workers self-selected into training — no randomization. DiD uses the time dimension to remove selection bias, under one testable assumption.</p>
       <div class="phase-tags">
-        <span class="tag">ATT</span>
-        <span class="tag">LaLonde</span>
-        <span class="tag">Parallel Trends</span>
+        <span class="tag">ATT</span><span class="tag">LaLonde</span>
+        <span class="tag">Parallel Trends</span><span class="tag">Placebo Test</span>
       </div>
     </a>
     <a class="phase-card" href="#">
       <div class="phase-num">PHASE 03</div>
       <div class="phase-status status-coming">Coming soon</div>
       <div class="phase-name">Propensity Score Matching</div>
-      <p class="phase-desc">Match treated and control units on their probability of receiving treatment. Love plots, SMD, covariate balance — LaLonde revisited.</p>
+      <p class="phase-desc">Same LaLonde data, no panel structure needed. Match treated and control workers on their probability of treatment. Love plots, SMD, covariate balance.</p>
       <div class="phase-tags">
-        <span class="tag">ATT</span>
-        <span class="tag">PSM</span>
-        <span class="tag">Love Plot</span>
+        <span class="tag">ATT</span><span class="tag">PSM</span>
+        <span class="tag">Love Plot</span><span class="tag">SMD</span>
       </div>
     </a>
     <a class="phase-card" href="#">
       <div class="phase-num">PHASE 04</div>
       <div class="phase-status status-coming">Coming soon</div>
-      <div class="phase-name">Synthetic Control</div>
-      <p class="phase-desc">Build a counterfactual from a weighted blend of donor units. Quadratic programming, pre-period fit, and placebo-in-space inference.</p>
+      <div class="phase-name">Inverse Probability Weighting</div>
+      <p class="phase-desc">PSM discards unmatched units. IPW keeps everyone — reweighting each observation by how surprising their treatment assignment was. ATE without data loss.</p>
       <div class="phase-tags">
-        <span class="tag">ATT</span>
-        <span class="tag">QP Optimization</span>
-        <span class="tag">Placebo</span>
+        <span class="tag">ATE</span><span class="tag">IPW</span>
+        <span class="tag">Horvitz-Thompson</span><span class="tag">Overlap</span>
       </div>
     </a>
     <a class="phase-card" href="#">
       <div class="phase-num">PHASE 05</div>
       <div class="phase-status status-coming">Coming soon</div>
-      <div class="phase-name">Regression Discontinuity</div>
-      <p class="phase-desc">Exploit a score threshold as quasi-random assignment. McCrary density test, bandwidth selection, local linear regression.</p>
+      <div class="phase-name">Synthetic Control</div>
+      <p class="phase-desc">One treated unit — a state — and 20 donors. Build a synthetic counterfactual via quadratic programming. Pre-period fit, placebo-in-time, placebo-in-space inference.</p>
       <div class="phase-tags">
-        <span class="tag">LATE</span>
-        <span class="tag">McCrary Test</span>
-        <span class="tag">Bandwidth</span>
+        <span class="tag">ATT</span><span class="tag">QP Optimization</span>
+        <span class="tag">RMSPE</span><span class="tag">Placebo-in-space</span>
       </div>
     </a>
     <a class="phase-card" href="#">
-      <div class="phase-num">PHASE 06–07</div>
+      <div class="phase-num">PHASE 06</div>
       <div class="phase-status status-coming">Coming soon</div>
-      <div class="phase-name">DoWhy + Final Comparison</div>
-      <p class="phase-desc">Formalize causal graphs with DoWhy. Compare all four method estimates side by side. When do they converge — and when should they diverge?</p>
+      <div class="phase-name">Regression Discontinuity</div>
+      <p class="phase-desc">A scholarship cutoff at score 70 creates quasi-random assignment. McCrary density test, Imbens-Kalyanaraman bandwidth, local linear regression, sharp vs fuzzy.</p>
       <div class="phase-tags">
-        <span class="tag">DoWhy</span>
-        <span class="tag">DAG</span>
-        <span class="tag">Refutation</span>
-        <span class="tag">MLflow</span>
+        <span class="tag">LATE</span><span class="tag">McCrary Test</span>
+        <span class="tag">Bandwidth</span><span class="tag">Sharp vs Fuzzy</span>
+      </div>
+    </a>
+    <a class="phase-card" href="#">
+      <div class="phase-num">PHASE 07</div>
+      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-name">Double Machine Learning</div>
+      <p class="phase-desc">High-dimensional confounders, nonlinear relationships. DML uses any ML model to partial out confounders from both treatment and outcome, then estimates on residuals.</p>
+      <div class="phase-tags">
+        <span class="tag">ATE</span><span class="tag">DML</span>
+        <span class="tag">Cross-fitting</span><span class="tag">Partialling-out</span>
+      </div>
+    </a>
+    <a class="phase-card" href="#">
+      <div class="phase-num">PHASE 08</div>
+      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-name">DoWhy + Causal Graphs</div>
+      <p class="phase-desc">Formalize every assumption we've made informally across six phases. DAG specification, backdoor criterion, four automated refutation tests, sensitivity analysis.</p>
+      <div class="phase-tags">
+        <span class="tag">DAG</span><span class="tag">Backdoor</span>
+        <span class="tag">Refutation</span><span class="tag">Sensitivity</span>
+      </div>
+    </a>
+    <a class="phase-card" href="#">
+      <div class="phase-num">PHASE 09</div>
+      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-name">Final Comparison</div>
+      <p class="phase-desc">All methods on the same LaLonde data. Do the estimates converge? CI overlap plot, MLflow experiment view across all runs, portfolio narrative.</p>
+      <div class="phase-tags">
+        <span class="tag">Convergence</span><span class="tag">CI Overlap</span>
+        <span class="tag">MLflow</span><span class="tag">Portfolio</span>
       </div>
     </a>
   </div>
@@ -779,17 +802,20 @@ mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_upper"</span>, c
       <div class="why-box-label">Decision guide</div>
       <p>Can you randomize? → <strong style="color:white">A/B Test</strong><br/>
       Have panel data + control group? → <strong style="color:white">DiD</strong><br/>
-      Have rich covariates, no panel? → <strong style="color:white">PSM</strong><br/>
+      Have rich covariates, no panel? → <strong style="color:white">PSM or IPW</strong><br/>
       One treated aggregate unit? → <strong style="color:white">Synthetic Control</strong><br/>
-      Score-based treatment cutoff? → <strong style="color:white">Regression Discontinuity</strong></p>
+      Score-based treatment cutoff? → <strong style="color:white">Regression Discontinuity</strong><br/>
+      High-dimensional confounders? → <strong style="color:white">Double ML</strong></p>
     </div>
     <table>
       <tr><th>Method</th><th>Estimand</th><th>Key Assumption</th></tr>
       <tr><td>A/B Test</td><td>ATE</td><td>Randomization</td></tr>
       <tr><td>DiD</td><td>ATT</td><td>Parallel Trends</td></tr>
       <tr><td>PSM</td><td>ATT</td><td>No hidden confounders</td></tr>
+      <tr><td>IPW</td><td>ATE / ATT</td><td>No hidden confounders</td></tr>
       <tr><td>Synthetic Control</td><td>ATT</td><td>Pre-period fit</td></tr>
       <tr><td>RD</td><td>LATE</td><td>No manipulation</td></tr>
+      <tr><td>Double ML</td><td>ATE</td><td>No hidden confounders</td></tr>
     </table>
   </div>
 </section>
@@ -924,10 +950,87 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <p>Randomization is the only method that requires no assumptions about confounders — because it eliminates them by design. Every other method in this series is an attempt to approximate randomization when it's unavailable. DiD uses time variation. PSM uses observed covariates. Synthetic Control uses donor units. RD uses a threshold. Each approach makes a different assumption, and each assumption can be tested — but none of them is as clean as what you built here.</p>
   <p>The discomfort you felt in the "broken experiment" cell — that feeling of not knowing whether your estimate is real — is what motivates the next four phases.</p>
 
-  <div class="callout"><strong>Next: Phase 2 — Difference-in-Differences</strong>The LaLonde dataset has no randomization. Workers self-selected into training. But we have earnings data from before and after the program — and a comparison group that didn't receive training. If the two groups would have trended the same way without treatment, we can difference out the selection bias. That's DiD. Coming next.</div>
+  <div class="callout"><strong>Next: Phase 2 — Difference-in-Differences</strong>The LaLonde dataset has no randomization. Workers self-selected into training. But we have earnings data from before and after the program — and a comparison group that didn't receive training. If the two groups would have trended the same way without treatment, we can difference out the selection bias. That's DiD.</div>
 
   <p style="margin-top:2rem">
-    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/A-B%20Testing.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/A-B%20Testing.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+  </p>
+
+</article>
+</div>
+
+<!-- PHASE 2 ARTICLE -->
+<div id="phase2">
+<article class="article-section">
+
+  <div class="article-meta">
+    <span class="series-tag">SERIES · PART 3</span>
+    <span>Difference-in-Differences</span>
+    <span>~14 min read</span>
+    <span>LaLonde Dataset · Python</span>
+  </div>
+
+  <h2>Difference-in-Differences: When Time Becomes Your Control Group</h2>
+  <p class="deck">The LaLonde job training dataset has a known true effect of $1,794. The naive comparison gives answers ranging from −$8,000 to +$2,000 depending on the approach. DiD uses the time dimension to get closer to the truth — under one testable assumption.</p>
+
+  <h3>The dataset that broke observational methods</h3>
+  <p>In 1986, Robert LaLonde published a paper evaluating the JTPA job training program. He had data from a genuine RCT — workers randomly assigned to training or not — and published the true treatment effect: <strong>$1,794 increase in annual earnings</strong>.</p>
+  <p>Then he replaced the randomized control group with workers from the PSID survey — real workers who hadn't been trained, but hadn't been randomly assigned to anything. He asked: what does the naive observational comparison give you? The answers swung from −$8,498 to +$2,249. The true effect was $1,794. This dataset became the benchmark every causal method is tested against.</p>
+
+  <div class="pull-quote"><p>"The PSID control group earns $13,000/year before training. The treated group earns $2,000/year. You're not comparing two groups — you're comparing two different economic realities."</p></div>
+
+  <h3>Why the naive comparison fails</h3>
+  <p>Workers who enrolled in training were younger, less educated, earned far less, and were economically disadvantaged before any training occurred. Comparing their 1978 earnings to the PSID workers confounds the training effect with an $11,000 pre-existing gap. Selection bias here isn't subtle — it's the entire signal.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase2/trends.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Earnings trends 1974-1978 for treated and control groups"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase2/trends.png</span>
+      <span style="font-size:0.65rem;opacity:0.7">Screenshot from notebook Cell 4</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 4.</strong> Left: DiD visualization — the dashed line is the parallel-trends counterfactual. The vertical bracket at 1978 is the DiD estimate. Right: 3-period view (1974, 1975, 1978) showing the pre-existing $11,000 earnings gap that naive comparison conflates with the training effect.</div>
+  </figure>
+
+  <h3>The DiD formula</h3>
+  <p>Instead of comparing earnings levels, compare earnings changes. If the control group grew by $X between 1975 and 1978 due to macroeconomic forces, the treated group should have grown by the same $X without training. Any additional growth is the training effect.</p>
+  <div class="formula">DiD = (Treated₁₉₇₈ − Treated₁₉₇₅) − (Control₁₉₇₈ − Control₁₉₇₅)</div>
+  <p>In regression form: <code>earnings ~ post + treat + post:treat</code>. The coefficient on <code>post:treat</code> — the interaction — is the DiD estimate. It captures the additional earnings change for treated workers in the post-period, above and beyond what control workers experienced.</p>
+
+  <h3>The parallel trends assumption</h3>
+  <p>DiD works under one assumption: in the absence of treatment, the treated group's earnings would have followed the same <em>trend</em> as the control group. Not the same level — the same slope. The dashed line in Figure 4 is that counterfactual. You never observe it. You can only make it plausible.</p>
+
+  <h3>Testing it: the pre-trends test</h3>
+  <p>We have earnings from 1974 and 1975, both pre-treatment. Under parallel trends, the two groups should have moved similarly between these years. We run DiD on 1974→1975 only — treating 1975 as the "post" period and ignoring 1978. The interaction coefficient should be near zero and statistically insignificant. A large, significant pre-trend coefficient means the groups were already diverging before training — the assumption is in trouble.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase2/DiD.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="DiD results: pre-trends test, decomposition, and method comparison"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase2/results.png</span>
+      <span style="font-size:0.65rem;opacity:0.7">Screenshot from notebook Cell 10</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 5.</strong> Left: pre-trends test (1974→1975) — the interaction should be near zero. Center: DiD decomposition showing the counterfactual and the estimated gap. Right: estimates compared to the LaLonde RCT benchmark of $1,794.</div>
+  </figure>
+
+  <h3>What breaking parallel trends looks like</h3>
+  <p>The notebook adds $3,000 to the control group's 1978 earnings — simulating a macroeconomic boom that hit PSID workers harder than the disadvantaged treated group. The DiD estimate drops: treatment looks less effective than it was. The direction of bias depends entirely on <em>how</em> the assumption is violated. There is no way to know the direction from data alone — which is exactly why the pre-trends test exists.</p>
+
+  <div class="callout"><strong>Key result</strong>DiD estimates land in the $1,200–$2,000 range across specifications — meaningfully closer to the $1,794 benchmark than the naive comparison's swing from negative to wildly positive. The pre-trends test result tells you how much confidence to place in the design.</div>
+
+  <h3>What DiD leaves unsolved</h3>
+  <p>DiD required panel data — the same workers observed before and after. It also required a control group that trends in parallel, which is genuinely hard to defend with the PSID comparison. What if you only have a single cross-sectional snapshot? What if there's no pre-period available? You need a different strategy — one that constructs a comparable control group directly from covariate information rather than from time variation.</p>
+
+  <div class="callout"><strong>Next: Phase 3 — Propensity Score Matching</strong>Same LaLonde data, no panel structure needed. We estimate each worker's probability of receiving training given their characteristics, then match treated and control workers with similar probabilities. The matched pairs are comparable — and the average outcome difference is the ATT.</div>
+
+  <p style="margin-top:2rem">
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/DiD.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    &nbsp;&nbsp;
+    <a href="https://medium.com/@ajay-deshpande" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 
 </article>
@@ -937,7 +1040,7 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
 <footer>
   <span>Causal Inference Toolkit · Built in public</span>
   <span>
-    <a href="https://github.com/Ajay-Deshpande" target="_blank">GitHub</a> ·
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" target="_blank">GitHub</a> ·
     <a href="https://medium.com/@ajay-deshpande" target="_blank">Medium</a> ·
     <a href="https://linkedin.com/in/deshpande-ajay" target="_blank">LinkedIn</a>
   </span>
