@@ -1,8 +1,4 @@
 # Databricks notebook source
-df_treat
-
-# COMMAND ----------
-
 # Phase 2 — Difference-in-Differences (DiD)
 # Causal Inference Toolkit
 #
@@ -559,9 +555,10 @@ print(f"direction from the data alone — which is why the pre-trends test matte
 # Visualization: Full DiD Summary
 # =============================================================================
 
-fig, ax = plt.subplots(figsize=(5,5))
+fig, axes = plt.subplots(1, 3, figsize=(14, 5))
 
 # ── Plot A: Pre-trends test ──────────────────────────────────────────────────
+ax = axes[0]
 
 for grp, color, label in [(1,'#e06b5b','Treated'), (0,'#5b8dd9','Control')]:
     sub = df[df['treat']==grp]
@@ -581,10 +578,11 @@ ax.text(1974.5, min(df['re74'].mean(), df['re75'].mean()) + 200,
         f'Pre-trend interaction\n${pretrend_coef:,.0f} (p={pretrend_p:.3f})',
         fontsize=8, ha='center',
         bbox=dict(boxstyle='round', fc='lightyellow', ec='#aaa', alpha=0.9))
-plt.savefig('../assets/plots/phase2/pre_trends_test.png', dpi=150, bbox_inches='tight')
+# plt.savefig('../assets/plots/phase2/pre_trends_test.png', dpi=150, bbox_inches='tight')
 
 # ── Plot B: DiD decomposition ────────────────────────────────────────────────
-fig, ax = plt.subplots(figsize=(5,5))
+ax = axes[1]
+
 periods = ['1975\n(pre)', '1978\n(post)']
 ctrl_vals  = [ctrl_75,  ctrl_78]
 treat_vals = [treat_75, treat_78]
@@ -611,10 +609,11 @@ ax.set_ylabel("Mean earnings ($)")
 ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x,_: f'${x:,.0f}'))
 ax.legend(fontsize=8)
 ax.spines[['top','right']].set_visible(False)
-plt.savefig('../assets/plots/phase2/DiD.png', dpi=150, bbox_inches='tight')
+# plt.savefig('../assets/plots/phase2/DiD.png', dpi=150, bbox_inches='tight')
 
 # ── Plot C: Method comparison ────────────────────────────────────────────────
-fig, ax = plt.subplots(figsize=(5,5))
+ax = axes[2]
+
 methods  = ['True ATT\n(RCT)', 'Naive\ndiff', 'DiD\nModel 1', 'DiD\nModel 2']
 estimates = [TRUE_ATT, naive_ate, ATT_m1, ATT_m2]
 colors   = ['#2ecc71', '#e74c3c', '#3498db', '#3498db']
@@ -738,7 +737,3 @@ The problem DiD leaves unsolved (→ Phase 3):
   and compares them directly. No panel data needed. Different assumption:
   instead of parallel trends, we assume no UNMEASURED confounders.
 """)
-
-# COMMAND ----------
-
-
