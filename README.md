@@ -4,6 +4,7 @@ A practitioner's series implementing causal inference methods from scratch —
 on real datasets, in Databricks, with MLflow tracking.
 
 **Read the series:** https://Ajay-Deshpande.github.io/applied-causal-inference/
+
 **Medium:** [Article Link](https://medium.com/@ajay-deshpande/why-most-data-science-doesnt-answer-the-question-you-re-asking-508aad563418)
 
 ## Notebooks
@@ -18,9 +19,11 @@ on real datasets, in Databricks, with MLflow tracking.
 | 6 | DoWhy + Causal Graphs | LaLonde (1986) | Coming |
 | 7 | Final Comparison | LaLonde (1986) | Coming |
 
-─────────────────────────────────────────────────────────────────────
+
+---
 REVISED SERIES PLAN — 9 PHASES (reference)
-─────────────────────────────────────────────────────────────────────
+
+---
 
 | Phase | Method                              | Dataset               | Estimand | Status |
 | ----- | ----------------------------------- | --------------------- | -------- | ------ |
