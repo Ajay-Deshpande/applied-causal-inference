@@ -47,9 +47,6 @@ print(f"  Benchmark ATT: ${TRUE_ATT:,}")
 
 # COMMAND ----------
 
-import numpy as np
-import pandas as pd
-
 TRUE_ATT = 1800
 
 def make_group(n, treat, age_mean, educ_mean, pct_black, pct_hisp, pct_married, pct_nodegree,
@@ -92,7 +89,7 @@ def get_simulated_lalonde(seed=42):
 # COMMAND ----------
 
 # =============================================================================
-# Load LaLonde Data (same as Phase 2)
+# Load LaLonde Data (Two controls)
 # =============================================================================
 #
 # KEY DIFFERENCE FROM PHASE 2:
@@ -104,23 +101,13 @@ def get_simulated_lalonde(seed=42):
 # We still use re74/re75 as COVARIATES (pre-treatment characteristics that
 # predict treatment selection), not as a panel outcome.
 
-TREATED_URL = ("http://www.nber.org/~rdehejia/data/nswre74_treated.txt"
-    # "https://raw.githubusercontent.com/robjellis/lalonde/master/"
-    # "lalonde_treated.csv"
-)
+TREATED_URL = ("http://www.nber.org/~rdehejia/data/nswre74_treated.txt")
 
 COLUMNS = ['treat', 'age', 'educ', 'black', 'hisp', 'married', 'nodegree', 're74', 're75', 're78']
 
-CONTROL_URL = (
-    "http://www.nber.org/~rdehejia/data/psid_controls.txt"
-    # "https://raw.githubusercontent.com/robjellis/lalonde/master/"
-    # "lalonde_control.csv"
-)
-
-CPS_CONTROL_URL = (
-    # "http://www.nber.org/~rdehejia/data/cps2_controls.txt"
-    "http://www.nber.org/~rdehejia/data/cps3_controls.txt"
-)
+CONTROL_URL = ("http://www.nber.org/~rdehejia/data/cps_controls.txt")
+# Subset dataset with more similar records
+CPS_CONTROL_URL = ("http://www.nber.org/~rdehejia/data/cps3_controls.txt")
 
 try:
     df_treat = pd.read_csv(TREATED_URL, names=COLUMNS, sep = '  ')
@@ -131,9 +118,7 @@ except Exception:
     # Fallback: simulate LaLonde-like data with published summary stats
     df_treat, df_ctrl, df_cps_ctrl = get_simulated_lalonde()
 # Combine into one DataFrame
-
 # Why invalid dataframe? Keep going, you'll know soon
-
 df_invalid = pd.concat([df_treat, df_ctrl], ignore_index=True)
 df_invalid['treat'] = df_invalid['treat'].astype(float).astype(int)
 
@@ -213,7 +198,7 @@ def compare_naive(df, OUTCOME, COVARIATES, TRUE_ATT, treatment_col='treat'):
 #
 # Recall from our conceptual discussion:
 #   - We care about CALIBRATION, not accuracy
-#   - A MODEL THAT PERFECTLY SEPARATES TREATED FROM CONTROL IS BAD
+#   - A MODEL THAT PERFECTLY IDENTIFIES TREATED FROM CONTROL IS BAD
 #     (means no overlap — matching becomes impossible) read blog for explanation
 #   - Logistic regression is naturally calibrated
 #
@@ -263,13 +248,8 @@ def estimate_propensity(df, covariates, treatment_col='treat'):
     # AUC-based overlap warning
     if auc > 0.85:
         print(f"\n⚠ WARNING: AUC = {auc:.3f} — near-perfect separation detected")
-        print(f"  This means treated and control groups are fundamentally different")
-        print(f"  on observed covariates. PSM will have very limited common support.")
-        print(f"  Options: (1) use a better comparison group, (2) trim to common")
-        print(f"  support, (3) consider IPW or DML instead of PSM.")
-        print("Luckily we have our CPS control to continue learning PSM",
-              "(option 1: better comparision group)")
-    return df, treated_ps, control_ps, overlap_min, overlap_max
+        print('*PSM is not the best fit*')
+    return df, treated_ps, control_ps, overlap_min, overlap_max, auc
 
 # COMMAND ----------
 
@@ -310,7 +290,7 @@ def visualize_propensity_estimate(treated_ps, control_ps, overlap_min, overlap_m
 
     plt.tight_layout()
     if save_fig:
-        plt.savefig('/tmp/phase3_overlap.png', dpi=150, bbox_inches='tight')
+        plt.savefig('../assets/plots/phase3/overlap.png', dpi=150, bbox_inches='tight')
         print("✓ Overlap plot saved")
     plt.show()
 
@@ -334,7 +314,7 @@ def visualize_propensity_estimate(treated_ps, control_ps, overlap_min, overlap_m
 
 _ = compare_naive(df_invalid, OUTCOME, COVARIATES, TRUE_ATT)
 
-df_invalid, treated_ps, control_ps, overlap_min, overlap_max = estimate_propensity(df_invalid, COVARIATES)
+df_invalid, treated_ps, control_ps, overlap_min, overlap_max, auc = estimate_propensity(df_invalid, COVARIATES)
 
 visualize_propensity_estimate(treated_ps, control_ps, overlap_min, overlap_max)
 
@@ -342,6 +322,13 @@ visualize_propensity_estimate(treated_ps, control_ps, overlap_min, overlap_max)
 #       Will not be able to find matching (similar) units for PSM.
 #       This demonstrates why direct comparison is invalid and why
 #       a better control group is needed.
+
+print(f"  This means treated and control groups are fundamentally different")
+print(f"  on observed covariates. PSM will have very limited common support.")
+print(f"  Options: (1) use a better comparison group, (2) trim to common")
+print(f"  support, (3) consider IPW or DML instead of PSM.")
+print("Luckily we have a better CPS control to continue learning PSM",
+        "(option 1: better comparision group)")
 
 # COMMAND ----------
 
@@ -363,9 +350,10 @@ visualize_propensity_estimate(treated_ps, control_ps, overlap_min, overlap_max)
 
 naive_att, smds_before = compare_naive(df, OUTCOME, COVARIATES, TRUE_ATT)
 
-df, treated_ps, control_ps, overlap_min, overlap_max = estimate_propensity(df, COVARIATES)
+df, treated_ps, control_ps, overlap_min, overlap_max, auc = estimate_propensity(df, COVARIATES)
 
-visualize_propensity_estimate(treated_ps, control_ps, overlap_min, overlap_max)
+visualize_propensity_estimate(treated_ps, control_ps, overlap_min, overlap_max, save_fig = True)
+print("We are bordeline on the assumptions and we'll continue with PSM to compare the groups")
 
 # COMMAND ----------
 
@@ -506,7 +494,7 @@ ax.spines[['top','right']].set_visible(False)
 ax.grid(axis='x', alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('/tmp/phase3_love_plot.png', dpi=150, bbox_inches='tight')
+plt.savefig('../assets/plots/phase3/love_plot.png', dpi=150, bbox_inches='tight')
 plt.show()
 print("✓ Love plot saved")
 
@@ -570,10 +558,31 @@ print(f"  PSM + OLS covariates:     ${ATT_ols:,.0f}")
 print(f"\n  Recovery (PSM simple):    {ATT_simple/TRUE_ATT*100:.1f}% of true ATT")
 print(f"  Recovery (PSM + OLS):     {ATT_ols/TRUE_ATT*100:.1f}% of true ATT")
 
+# INTERPRETING THESE RESULTS:
+#
+# Both estimates are directionally positive vs the naive -$635,
+# but the 95% CIs cross zero in both cases (p=0.63-0.90).
+# We CANNOT reject the null hypothesis of no effect.
+#
+# WHY THE CI IS SO WIDE:
+#   1. SMALL MATCHED SAMPLE: caliper dropped 102 of 185 treated workers
+#      (55%). Estimating ATT from 83 pairs with earnings SD ~$7,000
+#      gives SE ~$990 -- the CI spans ~$4,000 by construction.
+#   2. RESIDUAL IMBALANCE: educ, re74, re75 remain above SMD=0.1
+#      after matching. These are strong earnings predictors.
+#   3. ROOT CAUSE: AUC=0.87 means CPS workers are still quite
+#      different from treated workers. The caliper enforces quality
+#      honestly -- but quality matching on borderline overlap
+#      means losing most of your sample.
+#
+# CONCLUSION: PSM is not viable as a standalone estimator here.
+# Direction is correct. Precision is not. The wide CI is the
+# method being honest about what the data can support.
+
 # COMMAND ----------
 
 # =============================================================================
-# CELL 9 — Sensitivity Analysis (Rosenbaum Bounds)
+# Sensitivity Analysis (Rosenbaum Bounds)
 # =============================================================================
 #
 # PSM's critical assumption: no UNMEASURED confounders.
@@ -592,19 +601,17 @@ print(f"  Recovery (PSM + OLS):     {ATT_ols/TRUE_ATT*100:.1f}% of true ATT")
 # If our effect remains significant even at Γ=2 (unmeasured confounder
 # doubles the odds of treatment), the result is robust.
 
-print("=" * 60)
-print("SENSITIVITY ANALYSIS — Rosenbaum Bounds")
-print("=" * 60)
 print("""
 Γ = 1: No unmeasured confounding (our assumption)
 Γ = 1.5: Hidden variable makes treated 1.5× more likely to be treated
 Γ = 2: Hidden variable makes treated 2× more likely to be treated
-Γ = 3: Hidden variable makes treated 3× more likely to be treated
 
 For each Γ, we compute the WORST-CASE p-value (upper bound).
 If worst-case p < 0.05, result is significant even under that level
 of hidden confounding.
 """)
+
+from scipy.stats import binom
 
 def rosenbaum_bound(diffs, gamma):
     """
@@ -623,7 +630,6 @@ def rosenbaum_bound(diffs, gamma):
 
     # Under null with p_upper, T+ ~ Binomial(n, p_upper)
     # Compute upper bound p-value
-    from scipy.stats import binom
     p_val_upper = 1 - binom.cdf(T_plus - 1, n, p_upper)
     return p_val_upper
 
@@ -635,20 +641,17 @@ for g in gammas:
     sig  = "✓ Yes" if pval < 0.05 else "✗ No"
     print(f"{g:>6.2f}  {pval:>22.5f}  {sig:>18}")
 
-print(f"\nConclusion: Our result remains significant (p<0.05) up to")
-critical_g = None
-for g in gammas:
-    if rosenbaum_bound(diffs, g) < 0.05:
-        critical_g = g
-if critical_g:
-    print(f"  Γ ≈ {critical_g:.2f} — an unmeasured confounder would need to more than")
-    print(f"  double the odds of treatment to explain away the effect.")
-print(f"\nThis is a quantitative answer to 'but what about unmeasured confounders?'")
+print("""***
+As expected: p=0.50 at Gamma=1, worsens from there.
+The estimate is not significant to begin with.
+Rosenbaum bounds are not the right diagnostic here.
+The issue is power and overlap -- both addressed in Phase 4 (IPW).
+***""")
 
 # COMMAND ----------
 
 # =============================================================================
-# CELL 10 — Full Results Visualization
+# Full Results Visualization
 # =============================================================================
 
 fig = plt.figure(figsize=(16, 10))
@@ -739,21 +742,18 @@ ax.legend(fontsize=8)
 ax.spines[['top','right']].set_visible(False)
 ax.grid(axis='x', alpha=0.3)
 
-plt.savefig('/tmp/phase3_results.png', dpi=150, bbox_inches='tight')
+plt.savefig('../assets/plots/phase3/results.png', dpi=150, bbox_inches='tight')
 plt.show()
 print("✓ Results plot saved")
 
 # COMMAND ----------
 
 # =============================================================================
-# CELL 11 — MLflow Logging
+# MLflow Logging
 # =============================================================================
 
-print("=" * 60)
-print("MLFLOW LOGGING")
-print("=" * 60)
 
-mlflow.set_experiment("causal_inference_toolkit")
+mlflow.set_experiment("/Workspace/Users/deshpande.ajay.us@gmail.com/causal_inference_toolkit")
 
 with mlflow.start_run(run_name="phase3_psm"):
 
@@ -790,9 +790,9 @@ with mlflow.start_run(run_name="phase3_psm"):
                       round(ATT_simple/TRUE_ATT*100, 1))
 
     # Artifacts
-    mlflow.log_artifact('/tmp/phase3_overlap.png')
-    mlflow.log_artifact('/tmp/phase3_love_plot.png')
-    mlflow.log_artifact('/tmp/phase3_results.png')
+    mlflow.log_artifact('../assets/plots/phase3/overlap.png')
+    mlflow.log_artifact('../assets/plots/phase3/love_plot.png')
+    mlflow.log_artifact('../assets/plots/phase3/results.png')
 
     run_id = mlflow.active_run().info.run_id
     print(f"\n✓ MLflow run logged — Run ID: {run_id}")
@@ -800,17 +800,15 @@ with mlflow.start_run(run_name="phase3_psm"):
     print(f"  ATT (OLS):         ${ATT_ols:,.2f}")
     print(f"  95% CI:            [${CI_low:,.0f}, ${CI_high:,.0f}]")
     print(f"  SMD reduction:     {(1 - smds_after.abs().mean()/smds_before.abs().mean())*100:.1f}%")
+
     print(f"  Recovery:          {ATT_simple/TRUE_ATT*100:.1f}% of true ATT")
 
 # COMMAND ----------
 
 # =============================================================================
-# CELL 12 — Summary and Bridge to Phase 4 (IPW)
+# Summary and Bridge to Phase 4 (IPW)
 # =============================================================================
 
-print("=" * 60)
-print("PHASE 3 SUMMARY")
-print("=" * 60)
 print(f"""
 What we did:
   ✓ Established baseline imbalance (mean |SMD| = {smds_before.abs().mean():.3f})
@@ -820,32 +818,33 @@ What we did:
   ✓ Matched {n_matched} pairs ({n_unmatched} treated unmatched)
   ✓ Built Love plot — covariate balance after matching
   ✓ Estimated ATT via paired differences and OLS
-  ✓ Rosenbaum sensitivity bounds — quantified hidden bias robustness
+  ✓ Rosenbaum bounds -- shown for reference only (not applicable here)
   ✓ Logged all results to MLflow
 
 Key results:
   True ATT (RCT):          ${TRUE_ATT:,}
-  Naive estimate:          ${naive_att:,.0f}   ← biased
+  Naive estimate (CPS):    ${naive_att:,.0f}    <- wrong sign
   PSM simple:              ${ATT_simple:,.0f}
-  PSM + OLS:               ${ATT_ols:,.0f}
+  PSM + OLS (preferred):   ${ATT_ols:,.0f}
+  95% CI (simple):         [${CI_low:,.0f}, ${CI_high:,.0f}]  <- crosses zero
   Mean |SMD| before:       {smds_before.abs().mean():.3f}
-  Mean |SMD| after:        {smds_after.abs().mean():.3f}  ← much better
+  Mean |SMD| after:        {smds_after.abs().mean():.3f}
 
-What PSM left unsolved → motivates Phase 4 (IPW):
-  PSM DISCARDED {n_unmatched} treated units — those without a close enough
-  control match. This means:
-    (a) We're estimating ATT on a SUBSET of treated workers, not all of them
-    (b) Data loss reduces statistical power
-    (c) The estimand changed slightly — we're now estimating the ATT
-        only for matchable treated units
+VERDICT: PSM produced a directionally correct estimate but failed
+  to achieve statistical significance. CI spans ~-$1,800 to +$2,300.
+  This is an honest result -- not a code error.
 
-  IPW (Inverse Probability Weighting) fixes this. Instead of discarding
-  units, it REWEIGHTS every observation. Treated units with low propensity
-  scores (surprising — they got treated despite low probability) are
-  upweighted. Control units with high propensity scores (they looked like
-  they should have been treated but weren't) are also upweighted.
+WHY PSM FAILED ON THIS DATASET:
+  1. Borderline overlap (AUC=0.87): 55% of treated workers dropped
+  2. Small matched sample (83 pairs) gives SE ~$990 -- too wide
+     for a $1,794 signal to emerge cleanly
+  3. Residual imbalance on re74, re75 adds noise to estimate
 
-  Result: every observation contributes to the estimate. No data loss.
-  And we can estimate ATE (not just ATT) — the effect on the full
-  population, not just on those who were treated.
+WHAT THIS TEACHES:
+  PSM surfaces its own limitations through wide CIs rather than
+  giving false precision. That is correct behavior.
+
+-> Phase 4 (IPW) keeps all observations via reweighting instead
+   of discarding unmatched units. No data loss. Estimates ATE
+   on the full population rather than ATT on a subset.
 """)
