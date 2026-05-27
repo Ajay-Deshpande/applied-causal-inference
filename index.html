@@ -954,7 +954,8 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <div class="callout"><strong>Next: Phase 2 — Difference-in-Differences</strong>The LaLonde dataset has no randomization. Workers self-selected into training. But we have earnings data from before and after the program — and a comparison group that didn't receive training. If the two groups would have trended the same way without treatment, we can difference out the selection bias. That's DiD.</div>
 
   <p style="margin-top:2rem">
-    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/A-B%20Testing.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/A-B%20Testing.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://ajay-deshpande.medium.com/a-b-testing-why-randomization-is-the-gold-standard-and-four-ways-it-fails-in-practice-716e6350d9be" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 
 </article>
@@ -1029,9 +1030,9 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <div class="callout"><strong>Next: Phase 3 — Propensity Score Matching</strong>Same LaLonde data, no panel structure needed. We estimate each worker's probability of receiving training given their characteristics, then match treated and control workers with similar probabilities. The matched pairs are comparable — and the average outcome difference is the ATT.</div>
 
   <p style="margin-top:2rem">
-    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/DiD.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/DiD.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
     &nbsp;&nbsp;
-    <a href="https://medium.com/@ajay-deshpande" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
+    <a href="https://ajay-deshpande.medium.com/difference-in-differences-when-time-becomes-your-control-group-2f8f80de1c56" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 
 </article>
@@ -1060,12 +1061,12 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <p>The PSID control workers average 34 years old with $13,000/year pre-training earnings. The treated workers average 25 years old with $2,000/year. The logistic propensity model achieves AUC ~0.98 on this combined dataset. The overlap plot shows two completely separated spikes. We documented the failure and moved on — running the matching anyway would have produced a meaningless number.</p>
 
   <figure class="fig">
-    <img src="assets/plots/phase3/overlap_invalid.png"
+    <img src="assets/plots/phase3/overlap.png"
          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
          alt="PSID overlap plot — near-complete separation, PSM inapplicable"/>
     <div class="fig-placeholder" style="display:none">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      <span>assets/plots/phase3/overlap_invalid.png</span>
+      <span>assets/plots/phase3/overlap.png</span>
       <span style="font-size:0.65rem;opacity:0.7">Screenshot from notebook Cell 4</span>
     </div>
     <div class="fig-caption"><strong>Figure 6.</strong> Path A — PSID control group. The propensity score distributions for treated (red) and control (blue) workers are almost completely separated. AUC ~0.98. The common support region is a sliver. PSM is not applicable on this dataset.</div>
@@ -1105,9 +1106,9 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <div class="callout"><strong>Next: Phase 4 — Inverse Probability Weighting</strong>IPW uses the same propensity scores but keeps every observation. Instead of matching and discarding, it reweights each unit by how surprising their treatment assignment was. Result: ATE estimation on the full sample, no data loss — at the cost of higher variance when propensity scores are extreme.</div>
 
   <p style="margin-top:2rem">
-    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/PSM.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/PSM.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
     &nbsp;&nbsp;
-    <a href="https://medium.com/@ajay-deshpande" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
+    <a href="https://ajay-deshpande.medium.com/propensity-score-matching-when-the-method-tells-you-it-cant-help-4c8d50384df9" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 
 </article>
