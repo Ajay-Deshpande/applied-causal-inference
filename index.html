@@ -497,6 +497,11 @@ td {
   vertical-align: top;
 }
 tr:hover td { background: var(--paper2); }
+.result-table { overflow-x: auto; margin: 1.5rem 0; }
+tr.highlight td { background: rgba(22,163,74,0.08); font-weight: 600; }
+tr.bad-row td { background: rgba(220,38,38,0.06); color: var(--muted); }
+td.bad { color: #dc2626; font-weight: 600; }
+td.good { color: #16a34a; }
 .article-meta {
   display: flex;
   align-items: center;
@@ -604,6 +609,7 @@ footer a:hover { color: var(--accent); }
     <a href="#phase1">Phase 1</a>
     <a href="#phase2">Phase 2</a>
     <a href="#phase3">Phase 3</a>
+    <a href="#phase4">Phase 4</a>
     <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" target="_blank">GitHub</a>
     <a href="https://medium.com/@ajay-deshpande" target="_blank">Medium</a>
   </nav>
@@ -616,7 +622,7 @@ footer a:hover { color: var(--accent); }
     <h1>Causal Inference:<br/><em>Four Methods</em><br/>Compared</h1>
     <p class="hero-sub">Most data science answers the wrong question. Correlation is easy to find; causation is what decisions are made on. This series builds four causal methods from scratch — on real data, in real notebooks.</p>
     <div class="btn-group">
-      <a href="#phase3" class="btn btn-primary">Read Latest Phase</a>
+      <a href="#phase4" class="btn btn-primary">Read Latest Phase</a>
       <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" class="btn btn-secondary" target="_blank">View Notebooks</a>
     </div>
   </div>
@@ -706,14 +712,14 @@ mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_upper"</span>, c
         <span class="tag">Love Plot</span><span class="tag">SMD</span>
       </div>
     </a>
-    <a class="phase-card" href="#">
+    <a class="phase-card" href="#phase4">
       <div class="phase-num">PHASE 04</div>
-      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-status status-live">● Live</div>
       <div class="phase-name">Inverse Probability Weighting</div>
-      <p class="phase-desc">PSM discards unmatched units. IPW keeps everyone — reweighting each observation by how surprising their treatment assignment was. ATE without data loss.</p>
+      <p class="phase-desc">PSM discarded 55% of treated workers. IPW keeps everyone — reweighting controls by how "treated-like" they are. ATT = $1,212. Best observational estimate in the series so far.</p>
       <div class="phase-tags">
-        <span class="tag">ATE</span><span class="tag">IPW</span>
-        <span class="tag">Horvitz-Thompson</span><span class="tag">Overlap</span>
+        <span class="tag">ATT</span><span class="tag">IPW</span>
+        <span class="tag">AIPW</span><span class="tag">Doubly-Robust</span>
       </div>
     </a>
     <a class="phase-card" href="#">
@@ -813,7 +819,7 @@ mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_upper"</span>, c
       <tr><td>A/B Test</td><td>ATE</td><td>Randomization</td></tr>
       <tr><td>DiD</td><td>ATT</td><td>Parallel Trends</td></tr>
       <tr><td>PSM</td><td>ATT</td><td>No hidden confounders</td></tr>
-      <tr><td>IPW</td><td>ATE / ATT</td><td>No hidden confounders</td></tr>
+      <tr><td>IPW</td><td>ATT</td><td>No hidden confounders</td></tr>
       <tr><td>Synthetic Control</td><td>ATT</td><td>Pre-period fit</td></tr>
       <tr><td>RD</td><td>LATE</td><td>No manipulation</td></tr>
       <tr><td>Double ML</td><td>ATE</td><td>No hidden confounders</td></tr>
@@ -954,7 +960,8 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <div class="callout"><strong>Next: Phase 2 — Difference-in-Differences</strong>The LaLonde dataset has no randomization. Workers self-selected into training. But we have earnings data from before and after the program — and a comparison group that didn't receive training. If the two groups would have trended the same way without treatment, we can difference out the selection bias. That's DiD.</div>
 
   <p style="margin-top:2rem">
-    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/A-B%20Testing.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/A-B%20Testing.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://ajay-deshpande.medium.com/a-b-testing-why-randomization-is-the-gold-standard-and-four-ways-it-fails-in-practice-716e6350d9be" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 
 </article>
@@ -1029,9 +1036,9 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <div class="callout"><strong>Next: Phase 3 — Propensity Score Matching</strong>Same LaLonde data, no panel structure needed. We estimate each worker's probability of receiving training given their characteristics, then match treated and control workers with similar probabilities. The matched pairs are comparable — and the average outcome difference is the ATT.</div>
 
   <p style="margin-top:2rem">
-    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/DiD.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/DiD.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
     &nbsp;&nbsp;
-    <a href="https://medium.com/@ajay-deshpande" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
+    <a href="https://ajay-deshpande.medium.com/difference-in-differences-when-time-becomes-your-control-group-2f8f80de1c56" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 
 </article>
@@ -1060,12 +1067,12 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <p>The PSID control workers average 34 years old with $13,000/year pre-training earnings. The treated workers average 25 years old with $2,000/year. The logistic propensity model achieves AUC ~0.98 on this combined dataset. The overlap plot shows two completely separated spikes. We documented the failure and moved on — running the matching anyway would have produced a meaningless number.</p>
 
   <figure class="fig">
-    <img src="assets/plots/phase3/overlap_invalid.png"
+    <img src="assets/plots/phase3/overlap.png"
          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
          alt="PSID overlap plot — near-complete separation, PSM inapplicable"/>
     <div class="fig-placeholder" style="display:none">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      <span>assets/plots/phase3/overlap_invalid.png</span>
+      <span>assets/plots/phase3/overlap.png</span>
       <span style="font-size:0.65rem;opacity:0.7">Screenshot from notebook Cell 4</span>
     </div>
     <div class="fig-caption"><strong>Figure 6.</strong> Path A — PSID control group. The propensity score distributions for treated (red) and control (blue) workers are almost completely separated. AUC ~0.98. The common support region is a sliver. PSM is not applicable on this dataset.</div>
@@ -1102,12 +1109,179 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
 
   <div class="callout"><strong>On the Rosenbaum bounds</strong>We include them but scope them carefully. Rosenbaum bounds are most interpretable when matching achieved clean balance. Here, some residual imbalance remains. Reporting the bounds as primary robustness evidence would overclaim — they are supplementary context on a borderline dataset.</div>
 
-  <div class="callout"><strong>Next: Phase 4 — Inverse Probability Weighting</strong>IPW uses the same propensity scores but keeps every observation. Instead of matching and discarding, it reweights each unit by how surprising their treatment assignment was. Result: ATE estimation on the full sample, no data loss — at the cost of higher variance when propensity scores are extreme.</div>
+  <div class="callout"><strong>Next: Phase 4 — Inverse Probability Weighting</strong>IPW uses the same propensity scores but keeps every observation. Instead of matching and discarding, it reweights controls by how "treated-like" they are: w = e(X)/(1−e(X)). Treated units keep weight 1. Estimand is ATT — directly comparable to the $1,794 benchmark. Result: ATT = $1,212 on the full 185 treated workers, narrower CI than PSM's 83-pair estimate.</div>
 
   <p style="margin-top:2rem">
-    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/PSM.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/PSM.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
     &nbsp;&nbsp;
-    <a href="https://medium.com/@ajay-deshpande" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
+    <a href="https://ajay-deshpande.medium.com/propensity-score-matching-when-the-method-tells-you-it-cant-help-4c8d50384df9" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
+  </p>
+
+</article>
+</div>
+
+<!-- PHASE 4 ARTICLE -->
+<div id="phase4">
+<article class="article-section">
+
+  <div class="article-meta">
+    <span class="series-tag">SERIES · PART 5</span>
+    <span>Inverse Probability Weighting</span>
+    <span>~18 min read</span>
+    <span>LaLonde Dataset · Python · Databricks</span>
+  </div>
+
+  <h2>Reweighting Instead of Discarding: Inverse Probability Weighting</h2>
+  <p class="deck">PSM dropped 102 of 185 treated workers and produced an estimate too noisy to use. IPW keeps every observation — reweighting the control group to look like the treated group. Same propensity model, entirely different strategy, and the best observational ATT estimate in the series so far: $1,212 against a benchmark of $1,794.</p>
+
+  <h3>What PSM left unsolved</h3>
+  <p>In Phase 3, the caliper matching algorithm matched 83 of 185 treated workers. The other 102 were dropped. The matched sample was too small to detect a $1,794 effect — SE ~$990, CI spanning $4,000, p-value above 0.6. The failure was not hidden confounding. It was data loss from a lossy matching operation.</p>
+  <p>IPW keeps every observation. Instead of finding a close match and discarding workers without one, it reweights the control group. Controls who look like the treated workers get upweighted; controls who look nothing like them get downweighted. No one is dropped.</p>
+
+  <h3>Why ATT and not ATE</h3>
+  <p>IPW is often described as naturally estimating the ATE — historically, because the Horvitz-Thompson (1952) estimator came from survey sampling where population-level inference was the goal. But for this problem, ATT is the right estimand.</p>
+  <p>The LaLonde RCT benchmark of $1,794 is an ATT: the effect on workers who actually enrolled in job training. ATE would measure the hypothetical effect if training were extended to the full CPS population — workers who would never realistically enroll, with different earnings histories and labor market attachment. We have no ground truth to compare an ATE against. ATT is the headline; ATE appears at the end of the notebook as a secondary result with its own interpretation.</p>
+  <p>The ATT weight formula: treated units keep weight 1. Control units get weight <code>e(X) / (1 − e(X))</code> — how "treated-like" they are based on their propensity score. The reweighted control group becomes a synthetic comparison population that mirrors the treated group's covariate distribution.</p>
+
+  <h3>Two control groups, two different stories</h3>
+  <p>Same structure as Phase 3: two paths, one honest. Baseline imbalance tells the story before any reweighting.</p>
+
+  <div class="result-table">
+    <table>
+      <thead><tr><th>Covariate</th><th>SMD (Full CPS)</th><th>SMD (CPS-3)</th></tr></thead>
+      <tbody>
+        <tr><td>age</td><td>−0.671</td><td>−0.224</td></tr>
+        <tr><td>educ</td><td>−0.586</td><td>0.042</td></tr>
+        <tr><td>black</td><td class="bad">2.800</td><td class="bad">1.309</td></tr>
+        <tr><td>married</td><td class="bad">−1.147</td><td>−0.656</td></tr>
+        <tr><td>re74</td><td class="bad">−1.240</td><td>−0.544</td></tr>
+        <tr><td>re75</td><td class="bad">−1.301</td><td>−0.284</td></tr>
+        <tr><td><strong>Mean |SMD|</strong></td><td><strong>1.087</strong></td><td><strong>0.443</strong></td></tr>
+        <tr><td><strong>AUC</strong></td><td><strong>0.971</strong></td><td><strong>0.874</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Full CPS AUC = 0.971: near-perfect separation. The propensity model can almost perfectly predict who was in the training program just from demographics. IPW weights will be extreme. CPS-3 AUC = 0.874: borderline but workable.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase4/overlap.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Overlap plot: CPS-3 vs Full CPS propensity score distributions"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase4/overlap.png</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 9.</strong> Propensity score distributions. Left: CPS-3 — moderate overlap, green region shows common support. Right: Full CPS — control scores cluster near 0, treated near 1. Near-zero overlap means ATT weights e(X)/(1−e(X)) collapse toward zero for all controls, making any Full CPS estimate meaningless.</div>
+  </figure>
+
+  <h3>The ESS diagnostic</h3>
+  <p>Before looking at any estimates, check the Effective Sample Size: ESS = (Σw)² / Σw². ESS tells you how many observations are actually contributing information, expressed as an equivalent unweighted sample size.</p>
+
+  <div class="result-table">
+    <table>
+      <thead><tr><th>Dataset</th><th>Estimator</th><th>N</th><th>ESS</th><th>ESS %</th></tr></thead>
+      <tbody>
+        <tr><td>CPS-3</td><td>HT (raw)</td><td>614</td><td>227</td><td>36.9%</td></tr>
+        <tr><td>CPS-3</td><td>Stabilized</td><td>614</td><td>356</td><td>57.9%</td></tr>
+        <tr class="highlight"><td>CPS-3</td><td><strong>Trimmed</strong></td><td><strong>614</strong></td><td><strong>446</strong></td><td><strong>72.6%</strong></td></tr>
+        <tr class="bad-row"><td>Full CPS</td><td>HT (raw)</td><td>16,177</td><td>149</td><td>0.9% ⚠</td></tr>
+        <tr><td>Full CPS</td><td>Stabilized</td><td>16,177</td><td>15,606</td><td>96.5%</td></tr>
+        <tr><td>Full CPS</td><td>Trimmed</td><td>16,177</td><td>16,177</td><td>100.0%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The Full CPS rows reveal a subtlety. Raw HT weights collapse ESS to 149 (0.9%) — a single observation with weight 1,261 dominates. After stabilizing and trimming, ESS recovers to near-100%. But look at the Full CPS trim bounds: [0.989, 1.007]. Trimming forced all weights toward 1.0, stripping out any meaningful reweighting. The estimate becomes noise in a different way — not one observation dominating, but every observation treated equally despite massive covariate differences.</p>
+  <p>CPS-3 trimmed ESS of 446 (72.6%) is healthy. The reweighting is doing real work without any single observation dominating.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase4/weight_distributions.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="IPW weight distributions before and after trimming"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase4/weight_distributions.png</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 10.</strong> ATT control weight distributions e(X)/(1−e(X)) before and after trimming. CPS-3 (top): trimming tames a moderate tail. Full CPS (bottom): untrimmed weights reach 1,261; after trimming, all weights collapse to [0.989, 1.007] — the reweighting is effectively neutralized.</div>
+  </figure>
+
+  <h3>Covariate balance after reweighting</h3>
+  <p>IPW reduced mean |SMD| from 0.443 to 0.186 on CPS-3 — a 58% reduction. But several covariates remain above the 0.1 threshold:</p>
+
+  <div class="result-table">
+    <table>
+      <thead><tr><th>Covariate</th><th>Before IPW</th><th>After IPW</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>age</td><td>0.224</td><td>0.173</td><td>⚠</td></tr>
+        <tr><td>educ</td><td>0.042</td><td>0.083</td><td>✓</td></tr>
+        <tr class="bad-row"><td>black</td><td>1.309</td><td>0.328</td><td>⚠</td></tr>
+        <tr><td>hisp</td><td>0.257</td><td>0.068</td><td>✓</td></tr>
+        <tr class="bad-row"><td>married</td><td>0.656</td><td>0.379</td><td>⚠</td></tr>
+        <tr><td>nodegree</td><td>0.231</td><td>0.030</td><td>✓</td></tr>
+        <tr class="bad-row"><td>re74</td><td>0.544</td><td>0.306</td><td>⚠</td></tr>
+        <tr class="bad-row"><td>re75</td><td>0.284</td><td>0.120</td><td>⚠</td></tr>
+        <tr><td><strong>Mean</strong></td><td><strong>0.443</strong></td><td><strong>0.186</strong></td><td>↓ 58%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Race, marital status, and prior earnings remain meaningfully imbalanced — the same variables that troubled PSM. A logistic propensity model with linear terms can't fully bridge the structural differences between NSW participants and CPS workers. This is a data problem, not a method problem.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase4/love_plot.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Love plot: covariate balance before and after IPW reweighting"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase4/love_plot.png</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 11.</strong> Love plot: before IPW (circles) vs after trimmed IPW (diamonds). CPS-3 (left): most covariates improve, five remain above |SMD|=0.1. Full CPS (right): balance improves numerically but the trim-to-flat weights make the result uninterpretable.</div>
+  </figure>
+
+  <h3>Results</h3>
+
+  <figure class="fig">
+    <img src="assets/plots/phase4/results.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Full results: ATT estimates, ESS, Love plot, CI comparison"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase4/results.png</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 12.</strong> Full results dashboard. Top-center: ATT estimates vs $1,794 benchmark — IPW trimmed ($1,212) is the closest observational estimate so far. Bottom-right: 95% CI comparison shows IPW's dramatically narrower interval vs PSM's $4,000-wide CI on 83 pairs.</div>
+  </figure>
+
+  <div class="result-table">
+    <table>
+      <thead><tr><th>Method</th><th>Dataset</th><th>ATT Estimate</th><th>95% CI</th><th>vs $1,794</th></tr></thead>
+      <tbody>
+        <tr><td>Naive diff</td><td>CPS-3</td><td>−$635</td><td>—</td><td>wrong sign</td></tr>
+        <tr><td>PSM (Phase 3)</td><td>CPS-3</td><td>$123–$468</td><td>[−$1,819, $2,064]</td><td>68% off</td></tr>
+        <tr class="highlight"><td><strong>IPW trimmed</strong></td><td><strong>CPS-3</strong></td><td><strong>$1,212</strong></td><td><strong>[−$141, $2,718]</strong></td><td><strong>68% recovery</strong></td></tr>
+        <tr><td>AIPW (DR)</td><td>CPS-3</td><td>$476</td><td>[−$1,132, $2,084]</td><td>27% recovery</td></tr>
+        <tr class="bad-row"><td>IPW trimmed</td><td>Full CPS</td><td>−$1,021</td><td>[−$2,075, $127]</td><td>wrong sign</td></tr>
+        <tr class="bad-row"><td>AIPW (DR)</td><td>Full CPS</td><td>−$4,264</td><td>[−$5,630, −$2,898]</td><td>wrong sign</td></tr>
+        <tr class="highlight"><td><strong>True ATT (RCT)</strong></td><td>—</td><td><strong>$1,794</strong></td><td>—</td><td>benchmark</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pull-quote"><p>"IPW trimmed ATT = $1,212. The CI [−$141, $2,718] barely clips zero, but the point estimate recovers 68% of the $1,794 benchmark using all 185 treated workers. PSM recovered at most 26% on 83 pairs."</p></div>
+
+  <h3>Why AIPW performed worse than raw IPW</h3>
+  <p>The AIPW estimate of $476 is substantially worse than trimmed IPW's $1,212. This deserves a direct explanation.</p>
+  <p>AIPW is doubly robust: consistent if <em>either</em> the propensity model or the outcome regression model is correctly specified — not both. The outcome model here is OLS linear regression on re78. Earnings are highly right-skewed with a spike at zero — linear regression predicts poorly, especially for treated workers with zero prior earnings. When the outcome model is misspecified, the AIPW augmentation terms — designed to correct for propensity model errors — add noise instead. The result is a higher-variance estimate that moves further from the benchmark.</p>
+  <p>This is not a failure of the method. It is a demonstration of what "doubly robust" actually means: <em>one</em> model must be correct, not <em>neither</em>. Phase 7 (Double ML) will use flexible nonlinear outcome models that can handle skewed earnings — which is precisely why DML tends to outperform AIPW with linear nuisance models.</p>
+
+  <div class="callout"><strong>Key takeaway</strong>IPW used all 185 treated workers and produced ATT = $1,212 — the best point estimate of the series so far. The CI barely clips zero. The improvement over PSM ($123–$468, n=83) is directly traceable to the larger effective sample. Overlap is still the binding constraint: Full CPS fails completely, for the same reason PSM failed in Phase 3. IPW doesn't fix overlap; it just measures the damage differently — through ESS collapse rather than sample discard.</div>
+
+  <div class="callout"><strong>Next: Phase 5 — Synthetic Control</strong>Synthetic Control abandons individual-level reweighting entirely. It works at the aggregate level: one treated unit (a state), a panel of donor states, and a weighted combination that matches the pre-treatment earnings trajectory. Designed for small N, large T — the opposite data regime from LaLonde. We simulate a state-level policy panel to demonstrate it.</div>
+
+  <p style="margin-top:2rem">
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/IPW.ipynb" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    &nbsp;&nbsp;
+    <a href="https://ajay-deshpande.medium.com/inverse-probability-weighting-reweighting-instead-of-discarding-fb37c42abdee" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 
 </article>
