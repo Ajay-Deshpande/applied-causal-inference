@@ -610,6 +610,7 @@ footer a:hover { color: var(--accent); }
     <a href="#phase2">Phase 2</a>
     <a href="#phase3">Phase 3</a>
     <a href="#phase4">Phase 4</a>
+    <a href="#phase5">Phase 5</a>
     <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" target="_blank">GitHub</a>
     <a href="https://medium.com/@ajay-deshpande" target="_blank">Medium</a>
   </nav>
@@ -622,7 +623,7 @@ footer a:hover { color: var(--accent); }
     <h1>Causal Inference:<br/><em>Four Methods</em><br/>Compared</h1>
     <p class="hero-sub">Most data science answers the wrong question. Correlation is easy to find; causation is what decisions are made on. This series builds four causal methods from scratch — on real data, in real notebooks.</p>
     <div class="btn-group">
-      <a href="#phase4" class="btn btn-primary">Read Latest Phase</a>
+      <a href="#phase5" class="btn btn-primary">Read Latest Phase</a>
       <a href="https://github.com/Ajay-Deshpande/applied-causal-inference" class="btn btn-secondary" target="_blank">View Notebooks</a>
     </div>
   </div>
@@ -722,11 +723,11 @@ mlflow.<span class="fn">log_metric</span>(<span class="str">"CI_upper"</span>, c
         <span class="tag">AIPW</span><span class="tag">Doubly-Robust</span>
       </div>
     </a>
-    <a class="phase-card" href="#">
+    <a class="phase-card" href="#phase5">
       <div class="phase-num">PHASE 05</div>
-      <div class="phase-status status-coming">Coming soon</div>
+      <div class="phase-status status-live">● Live</div>
       <div class="phase-name">Synthetic Control</div>
-      <p class="phase-desc">One treated unit — a state — and 20 donors. Build a synthetic counterfactual via quadratic programming. Pre-period fit, placebo-in-time, placebo-in-space inference.</p>
+      <p class="phase-desc">One treated state, 20 donors, known true effect of $1,500. ATT = $1,521. RMSPE ratio 4.36. Permutation p = 0.000. The cleanest result in the series.</p>
       <div class="phase-tags">
         <span class="tag">ATT</span><span class="tag">QP Optimization</span>
         <span class="tag">RMSPE</span><span class="tag">Placebo-in-space</span>
@@ -1180,15 +1181,15 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
 
   <div class="result-table">
     <table>
-      <thead><tr><th>Dataset</th><th>Estimator</th><th>N</th><th>ESS</th><th>ESS %</th></tr></thead>
-      <tbody>
-        <tr><td>CPS-3</td><td>HT (raw)</td><td>614</td><td>227</td><td>36.9%</td></tr>
-        <tr><td>CPS-3</td><td>Stabilized</td><td>614</td><td>356</td><td>57.9%</td></tr>
-        <tr class="highlight"><td>CPS-3</td><td><strong>Trimmed</strong></td><td><strong>614</strong></td><td><strong>446</strong></td><td><strong>72.6%</strong></td></tr>
-        <tr class="bad-row"><td>Full CPS</td><td>HT (raw)</td><td>16,177</td><td>149</td><td>0.9% ⚠</td></tr>
+    <thead><tr><th>Dataset</th><th>Estimator</th><th>N</th><th>ESS</th><th>ESS %</th></tr></thead>
+    <tbody>
+      <tr><td>CPS-3</td><td>HT (raw)</td><td>614</td><td>227</td><td>36.9%</td></tr>
+      <tr><td>CPS-3</td><td>Stabilized</td><td>614</td><td>356</td><td>57.9%</td></tr>
+      <tr class="highlight"><td>CPS-3</td><td><strong>Trimmed</strong></td><td><strong>614</strong></td><td><strong>446</strong></td><td><strong>72.6%</strong></td></tr>
+      <tr class="bad-row"><td>Full CPS</td><td>HT (raw)</td><td>16,177</td><td>149</td><td>0.9% ⚠</td></tr>
         <tr><td>Full CPS</td><td>Stabilized</td><td>16,177</td><td>15,606</td><td>96.5%</td></tr>
         <tr><td>Full CPS</td><td>Trimmed</td><td>16,177</td><td>16,177</td><td>100.0%</td></tr>
-      </tbody>
+    </tbody>
     </table>
   </div>
 
@@ -1255,7 +1256,7 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <div class="result-table">
     <table>
       <thead><tr><th>Method</th><th>Dataset</th><th>ATT Estimate</th><th>95% CI</th><th>vs $1,794</th></tr></thead>
-      <tbody>
+    <tbody>
         <tr><td>Naive diff</td><td>CPS-3</td><td>−$635</td><td>—</td><td>wrong sign</td></tr>
         <tr><td>PSM (Phase 3)</td><td>CPS-3</td><td>$123–$468</td><td>[−$1,819, $2,064]</td><td>68% off</td></tr>
         <tr class="highlight"><td><strong>IPW trimmed</strong></td><td><strong>CPS-3</strong></td><td><strong>$1,212</strong></td><td><strong>[−$141, $2,718]</strong></td><td><strong>68% recovery</strong></td></tr>
@@ -1263,7 +1264,7 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
         <tr class="bad-row"><td>IPW trimmed</td><td>Full CPS</td><td>−$1,021</td><td>[−$2,075, $127]</td><td>wrong sign</td></tr>
         <tr class="bad-row"><td>AIPW (DR)</td><td>Full CPS</td><td>−$4,264</td><td>[−$5,630, −$2,898]</td><td>wrong sign</td></tr>
         <tr class="highlight"><td><strong>True ATT (RCT)</strong></td><td>—</td><td><strong>$1,794</strong></td><td>—</td><td>benchmark</td></tr>
-      </tbody>
+    </tbody>
     </table>
   </div>
 
@@ -1282,6 +1283,96 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
     <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/master/notebooks/IPW.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
     &nbsp;&nbsp;
     <a href="https://ajay-deshpande.medium.com/inverse-probability-weighting-reweighting-instead-of-discarding-fb37c42abdee" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
+  </p>
+
+</article>
+</div>
+
+<!-- PHASE 5 ARTICLE -->
+<div id="phase5">
+<article class="article-section">
+
+  <div class="article-meta">
+    <span class="series-tag">SERIES · PART 6</span>
+    <span>Synthetic Control</span>
+    <span>~16 min read</span>
+    <span>Simulated State Panel · Python · Databricks</span>
+  </div>
+
+  <h2>Synthetic Control: Building a Counterfactual State</h2>
+  <p class="deck">One treated state, 20 donors, true effect of $1,500. ATT = $1,521. Pre-period RMSPE = $353 (1.68% of mean). RMSPE ratio 4.36. Permutation p = 0.000. This is what causal inference looks like when the method fits the data regime.</p>
+
+  <h3>A completely different data regime</h3>
+  <p>Every phase from 2 through 4 operated on the LaLonde data: many treated units, many control units, estimate an average individual-level effect. Synthetic Control is designed for the opposite: N_treated = 1. One state, one firm, one country. You cannot run IPW or PSM on a single treated unit — there is no distribution to reweight.</p>
+  <p>Instead, Synthetic Control asks: can we find a weighted combination of untreated states whose pre-treatment income trajectory matches the treated state's history? If yes, that combination — the synthetic control — is the counterfactual. The post-treatment gap between the treated state and its synthetic version is the treatment effect.</p>
+
+  <h3>Constrained quadratic programming</h3>
+  <p>Find weights W = (w₁, …, w_J) minimizing the pre-period prediction error, subject to wⱼ ≥ 0 and Σwⱼ = 1. The constraints force a convex combination of real donor states — no negative weights, no extrapolation beyond the observed data. OLS would allow negative weights that have no meaningful interpretation as a "weighted average of states."</p>
+  <p>Six of 20 donors received non-zero weights. The top three — donor_16 (30.4%), donor_2 (29.8%), donor_18 (25.2%) — account for 85% of the synthetic state. The remaining 14 received weight zero. This sparsity is expected: a synthetic control that spreads weight across all donors is harder to interpret and risks overfitting pre-period noise.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase5/prefit.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Pre-period fit: treated state vs synthetic control"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase5/prefit.png</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 13.</strong> Pre-period fit: treated state (red) vs synthetic control (blue dashed). Left: full 30-period timeline with treatment at t=21 (shaded). Right: pre-period only with residual gap shaded. RMSPE = $353 — 1.68% of the treated state's pre-period mean. The synthetic control tracks the treated state closely with no systematic drift.</div>
+  </figure>
+
+  <h3>The gap plot</h3>
+  <p>Pre-period (t=1–20): gap hovers near zero. The synthetic control is tracking the treated state on its own dynamics. Post-period (t=21–30): gap opens sharply and stabilizes around $1,500. Average post-period gap = $1,521. True embedded effect = $1,500.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase5/gap.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Gap plot: treated minus synthetic control"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase5/gap.png</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 14.</strong> Gap = treated − synthetic, period by period. Pre-period gap near zero confirms fit quality. Post-period gap (green shaded) averages $1,521 against a true effect of $1,500. The green dashed line is the ATT estimate; the orange dotted line is the true effect.</div>
+  </figure>
+
+  <h3>Placebo-in-time</h3>
+  <p>Pretend treatment happened at t=10, t=13, and t=16. The placebo ATTs were −$115, −$236, and −$166. All small. No spurious pre-period effects appear at any false treatment date. The divergence is concentrated at the actual treatment date, not distributed across the pre-period.</p>
+
+  <h3>Placebo-in-space: inference without distributional assumptions</h3>
+  <p>Apply the same Synthetic Control procedure to each donor state. Compute the post/pre RMSPE ratio for each. The treated state's ratio = 4.36. The post-period gap grew to 4.36 times the pre-period noise level. 19 of 20 donor placebos were valid (one excluded for poor pre-fit). None came close to 4.36.</p>
+
+  <figure class="fig">
+    <img src="assets/plots/phase5/placebo_space.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="Placebo-in-space: gap series and RMSPE ratio distribution"/>
+    <div class="fig-placeholder" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>assets/plots/phase5/placebo_space.png</span>
+    </div>
+    <div class="fig-caption"><strong>Figure 15.</strong> Left: all gap series — treated state (red) vs donor placebos (grey). The treated state's post-treatment divergence is visually distinct. Right: post/pre RMSPE ratio distribution. Treated state ratio of 4.36 (red line) sits far to the right of all donor placebos. Permutation p-value = 0.000.</div>
+  </figure>
+
+  <div class="result-table"><table>
+    <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>True ATT (embedded)</td><td>$1,500</td></tr>
+      <tr class="highlight"><td><strong>ATT estimate</strong></td><td><strong>$1,521 (101.4% recovery)</strong></td></tr>
+      <tr><td>Pre-period RMSPE</td><td>$353 (1.68% of mean)</td></tr>
+      <tr><td>Post/Pre RMSPE ratio</td><td>4.36</td></tr>
+      <tr class="highlight"><td><strong>Permutation p-value</strong></td><td><strong>0.000</strong></td></tr>
+      <tr><td>Non-zero donors</td><td>6 of 20</td></tr>
+      <tr><td>Valid placebos</td><td>19 of 20</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="pull-quote"><p>"The synthetic state is not an abstract statistical adjustment. It is a named, weighted combination of real donor states — donor_16, donor_2, donor_18 and three others — whose pre-treatment history matches the treated state's. You can look at those six states and ask whether they make sense as a comparison group."</p></div>
+
+  <div class="callout"><strong>Next: Phase 6 — Regression Discontinuity</strong>Synthetic Control required a long pre-treatment time series and a panel of donor units. RDD requires neither. It exploits a sharp discontinuity in treatment assignment: units just above a score threshold receive treatment, units just below do not. The estimand is LATE — the Local Average Treatment Effect at the threshold. We simulate a scholarship cutoff dataset.</div>
+
+  <p style="margin-top:2rem">
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/SyntheticControl.ipynb" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook on GitHub →</a>
+    &nbsp;&nbsp;
+    <a href="https://ajay-deshpande.medium.com/synthetic-control-building-a-counterfactual-state-439999eb4583" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 
 </article>
