@@ -1378,6 +1378,55 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
 </article>
 </div>
 
+
+<!-- PHASE 6 ARTICLE -->
+<div id="phase6">
+<article class="article-section">
+  <div class="article-meta">
+    <span class="series-tag">SERIES · PART 7</span>
+    <span>Regression Discontinuity</span>
+    <span>~16 min read</span>
+    <span>Simulated Scholarship Dataset · Python · Databricks</span>
+  </div>
+  <h2>Regression Discontinuity: The Value of a Threshold</h2>
+  <p class="deck">Naive estimate = $6,765 (badly biased by the ability confound). Local linear RDD LATE = $2,587 against a true LATE of $2,500. t = 10.33. No model for confounders needed — the threshold does the work.</p>
+  <h3>Identification without a confounder model</h3>
+  <p>Every method so far handled confounding by adjusting for observed covariates. RDD requires no such adjustment. Students just above and just below score 70 are nearly identical — the only thing that changes discontinuously at the threshold is the scholarship. The jump in outcomes at that point is the causal effect, regardless of what unobserved factors drive earnings.</p>
+  <p>The identification assumption: potential outcomes are continuous at the cutoff. Nothing else jumps at score 70. The McCrary density test checks whether students can manipulate their score to land just above the threshold.</p>
+  <h3>Why the naive estimate is so wrong</h3>
+  <p>The raw mean difference is $6,765 against a true LATE of $2,500 — biased upward by $4,265. Higher-scoring students earn more regardless of the scholarship, through ability, effort, and learning. RDD strips this out by comparing only students within a narrow band around the cutoff, where the ability distribution is effectively continuous.</p>
+  <h3>Bandwidth: the central tradeoff</h3>
+  <p>Cross-validation (LOO-MSE on each side separately) selected h = 18.45 score points — students scoring 51.6 to 88.5. That's 1,663 of 2,000 observations: 1,082 controls, 581 treated. Narrow bandwidth reduces bias; wide bandwidth reduces variance. CV finds the MSE-minimising balance.</p>
+  <figure class="fig">
+    <img src="assets/plots/phase6/rd_plot.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt="RD plot"/>
+    <div class="fig-placeholder" style="display:none"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span>assets/plots/phase6/rd_plot.png</span></div>
+    <div class="fig-caption"><strong>Figure 15.</strong> RD plot within h=18.45. Binned means (dots) and fitted local linear lines on each side. The green arrow shows the jump at score=70 — the LATE estimate of $2,587.</div>
+  </figure>
+  <figure class="fig">
+    <img src="assets/plots/phase6/bandwidth_sensitivity.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt="Bandwidth sensitivity"/>
+    <div class="fig-placeholder" style="display:none"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span>assets/plots/phase6/bandwidth_sensitivity.png</span></div>
+    <div class="fig-caption"><strong>Figure 16.</strong> LATE estimates across bandwidths h=5 to h=35, local linear (left) and local quadratic (right). Estimates cluster near $2,500 across the full range with overlapping CIs — the result is not bandwidth-specific.</div>
+  </figure>
+  <div class="result-table"><table>
+    <thead><tr><th>Method</th><th>LATE</th><th>95% CI</th><th>t-stat</th></tr></thead>
+    <tbody>
+      <tr class="bad-row"><td>Naive mean diff</td><td>$6,765</td><td>—</td><td>—</td></tr>
+      <tr class="highlight"><td><strong>Local linear (h=18.45)</strong></td><td><strong>$2,587</strong></td><td><strong>[$2,096, $3,078]</strong></td><td><strong>10.33</strong></td></tr>
+      <tr><td>Local quadratic (h=18.45)</td><td>$2,893</td><td>—</td><td>—</td></tr>
+      <tr class="highlight"><td><strong>True LATE</strong></td><td><strong>$2,500</strong></td><td>benchmark</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <h3>The McCrary test: a false positive</h3>
+  <p>The McCrary density test returned p = 0.000. In a real study this would be a stop signal. Here it is a false positive from our simplified implementation: scores simulated as normal(65, 12) produce a curved density near the cutoff, and our bin-based local linear fit misreads the curvature as a jump. A proper implementation (rddensity in R) uses local polynomial density estimation that handles this. The notebook documents the limitation explicitly.</p>
+  <div class="callout"><strong>Next: Phase 7 — Double ML</strong>RDD worked on a clean threshold dataset. Phase 7 returns to LaLonde. AIPW in Phase 4 failed because the linear outcome model misfitted skewed earnings. Double ML replaces it with gradient boosting — flexible nonlinear nuisance models that can handle the earnings distribution, with a Neyman-orthogonal score ensuring parametric convergence rates.</div>
+  <p style="margin-top:2rem">
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/RDD.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook →</a>
+    &nbsp;&nbsp;
+    <a href="https://ajay-deshpande.medium.com/regression-discontinuity-the-value-of-a-threshold-14ca410b6da0" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
+  </p>
+</article>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <span>Causal Inference Toolkit · Built in public</span>
