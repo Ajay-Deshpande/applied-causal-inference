@@ -1420,9 +1420,9 @@ purchased = np.random.binomial(<span style="color:#d19a66">1</span>, sigmoid(log
   <p>The McCrary density test returned p = 0.000. In a real study this would be a stop signal. Here it is a false positive from our simplified implementation: scores simulated as normal(65, 12) produce a curved density near the cutoff, and our bin-based local linear fit misreads the curvature as a jump. A proper implementation (rddensity in R) uses local polynomial density estimation that handles this. The notebook documents the limitation explicitly.</p>
   <div class="callout"><strong>Next: Phase 7 — Double ML</strong>RDD worked on a clean threshold dataset. Phase 7 returns to LaLonde. AIPW in Phase 4 failed because the linear outcome model misfitted skewed earnings. Double ML replaces it with gradient boosting — flexible nonlinear nuisance models that can handle the earnings distribution, with a Neyman-orthogonal score ensuring parametric convergence rates.</div>
   <p style="margin-top:2rem">
-    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/RDD.ipynb" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook →</a>
+    <a href="https://github.com/Ajay-Deshpande/applied-causal-inference/blob/main/notebooks/RDD.py" target="_blank" style="color:var(--accent2);font-weight:600">View full notebook →</a>
     &nbsp;&nbsp;
-    <a href="https://medium.com/@ajay-deshpande" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
+    <a href="https://ajay-deshpande.medium.com/regression-discontinuity-the-value-of-a-threshold-14ca410b6da0" target="_blank" style="color:var(--accent2);font-weight:600">Read on Medium →</a>
   </p>
 </article>
 </div>
