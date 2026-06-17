@@ -144,28 +144,28 @@ Three ideas recur across all eight phases:
 
 ## Interview Notes
 
-- **[01 — Foundations and Estimand Types](Interview Notes/01_foundations_and_estimands.md)**
+- **[01 — Foundations and Estimand Types](Interview%20Notes/01_foundations_and_estimands.md)**
   Potential outcomes, SUTVA, confounders/mediators/colliders/moderators, DAGs, backdoor/frontdoor, do-calculus, selection vs. confounding bias — then ATE, ATT, ATC, CATE, ITT, LATE, marginal vs. conditional effects.
  
-- **[02 — Identification Assumptions](Interview Notes/02_identification_assumptions.md)**
+- **[02 — Identification Assumptions](Interview%20Notes/02_identification_assumptions.md)**
   Unconfoundedness/ignorability/exchangeability, positivity/overlap, consistency, parallel trends, exclusion restriction, monotonicity, no anticipation, no interference — what each claims, why it's needed, how it fails, how it's checked.
 
-- **[03 — Methods: Experimental, Matching, Reweighting](Interview Notes/03_methods_experimental_matching_reweighting.md)**
+- **[03 — Methods: Experimental, Matching, Reweighting](Interview%20Notes/03_methods_experimental_matching_reweighting.md)**
   RCT/A-B testing, PSM (nearest-neighbor, caliper, exact, CEM), IPW (stabilized, trimmed), AIPW, overlap weights.
 
-- **[04 — Methods: Panel and Quasi-Experimental Designs](Interview Notes/04_methods_panel_quasiexperimental.md)**
+- **[04 — Methods: Panel and Quasi-Experimental Designs](Interview%20Notes/04_methods_panel_quasiexperimental.md)**
   DiD (+ TWFE caveats), Synthetic Control, RDD (sharp/fuzzy), DDD, event studies, IV/2SLS.
 
-- **[05 — Methods: ML-Based Estimators](Interview Notes/05_methods_ml_based.md)**
+- **[05 — Methods: ML-Based Estimators](Interview%20Notes/05_methods_ml_based.md)**
   Double ML / Robinson PLR (with full formulas, cross-fitting, Neyman orthogonality), CausalForest/GRF, MetaLearners (S/T/X), DR-Learner, TMLE.
 
-- **[06 — The DoWhy Identification Framework](Interview Notes/06_dowhy_identification_framework.md)**
+- **[06 — The DoWhy Identification Framework](Interview%20Notes/06_dowhy_identification_framework.md)**
   Model → Identify → Estimate → Refute workflow; placebo treatment, random common cause, data subset refuters; sensitivity analysis (Rosenbaum bounds, E-values).
 
-- **[07 — Diagnostics](Interview Notes/07_diagnostics.md)**
+- **[07 — Diagnostics](Interview%20Notes/07_diagnostics.md)**
   SMD/love plots, propensity AUC, effective sample size (ESS), common support, cross-fitting recap, analytic vs. bootstrap CIs — formulas and interpretation thresholds.
 
-- **[08 — Common Pitfalls and Lessons](Interview Notes/08_pitfalls_and_lessons.md)**
+- **[08 — Common Pitfalls and Lessons](Interview%20Notes/08_pitfalls_and_lessons.md)**
   Overlap collapse, the large-N precision trap, p-hacking via trimming, doubly-robust methods amplifying misspecification, false-positive diagnostic tests, bad controls, CATE/subgroup fishing.
 
 ---
