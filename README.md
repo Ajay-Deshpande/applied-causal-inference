@@ -141,3 +141,48 @@ Three ideas recur across all eight phases:
 3. **Convergence across methods with different assumptions is stronger
    evidence than any single confidence interval — and divergence points to
    which assumption is being violated, not which number is correct.**
+
+## Interview Notes
+
+- **[01 — Foundations and Estimand Types](Interview Notes/01_foundations_and_estimands.md)**
+  Potential outcomes, SUTVA, confounders/mediators/colliders/moderators, DAGs, backdoor/frontdoor, do-calculus, selection vs. confounding bias — then ATE, ATT, ATC, CATE, ITT, LATE, marginal vs. conditional effects.
+ 
+- **[02 — Identification Assumptions](Interview Notes/02_identification_assumptions.md)**
+  Unconfoundedness/ignorability/exchangeability, positivity/overlap, consistency, parallel trends, exclusion restriction, monotonicity, no anticipation, no interference — what each claims, why it's needed, how it fails, how it's checked.
+
+- **[03 — Methods: Experimental, Matching, Reweighting](Interview Notes/03_methods_experimental_matching_reweighting.md)**
+  RCT/A-B testing, PSM (nearest-neighbor, caliper, exact, CEM), IPW (stabilized, trimmed), AIPW, overlap weights.
+
+- **[04 — Methods: Panel and Quasi-Experimental Designs](Interview Notes/04_methods_panel_quasiexperimental.md)**
+  DiD (+ TWFE caveats), Synthetic Control, RDD (sharp/fuzzy), DDD, event studies, IV/2SLS.
+
+- **[05 — Methods: ML-Based Estimators](Interview Notes/05_methods_ml_based.md)**
+  Double ML / Robinson PLR (with full formulas, cross-fitting, Neyman orthogonality), CausalForest/GRF, MetaLearners (S/T/X), DR-Learner, TMLE.
+
+- **[06 — The DoWhy Identification Framework](Interview Notes/06_dowhy_identification_framework.md)**
+  Model → Identify → Estimate → Refute workflow; placebo treatment, random common cause, data subset refuters; sensitivity analysis (Rosenbaum bounds, E-values).
+
+- **[07 — Diagnostics](Interview Notes/07_diagnostics.md)**
+  SMD/love plots, propensity AUC, effective sample size (ESS), common support, cross-fitting recap, analytic vs. bootstrap CIs — formulas and interpretation thresholds.
+
+- **[08 — Common Pitfalls and Lessons](Interview Notes/08_pitfalls_and_lessons.md)**
+  Overlap collapse, the large-N precision trap, p-hacking via trimming, doubly-robust methods amplifying misspecification, false-positive diagnostic tests, bad controls, CATE/subgroup fishing.
+
+---
+
+## Quick Decision Guide: Which Method, When
+
+| Situation | Reach for | Why | See |
+|---|---|---|---|
+| You control treatment assignment | RCT / A-B testing | Only design that handles unobserved confounding by construction | 03 |
+| Cross-sectional, observed confounders, good overlap, small/medium N | PSM or IPW | Transparent, doesn't require modeling the outcome | 03 |
+| Cross-sectional, observed confounders, want efficiency + a backup model | AIPW | Doubly robust — but check outcome model fit first | 03 |
+| Cross-sectional, large N, nonlinear confounding, need valid CIs | DML (LinearDML / NonParamDML) | Cross-fitting + Neyman orthogonality enable flexible nuisance models with parametric-rate inference | 05 |
+| Large N, suspect treatment effects vary by covariates | CausalForest | Estimates CATE(x) directly with honest, asymptotically normal inference | 05 |
+| Imbalanced treated/control group sizes, want CATE | X-Learner | Cross-imputation borrows strength from the larger group | 05 |
+| Panel data, clear pre/post, plausible parallel trends | DiD (or event study to check trends) | Differences out time-invariant group differences and common trends | 04 |
+| Single treated unit, panel of untreated comparators | Synthetic Control | Constructs a data-driven counterfactual from donor weights | 04 |
+| Treatment assigned by a threshold on a continuous variable | RDD (sharp or fuzzy) | Local randomization near the cutoff; check for manipulation first | 04 |
+| Suspected unobserved confounding, but a plausible instrument exists | IV / 2SLS | Only tool here that doesn't require unconfoundedness — but exclusion restriction must be defensible | 04 |
+| Want to make assumptions explicit and stress-test them | DoWhy (Model→Identify→Estimate→Refute) | Forces an explicit DAG and runs refutation/sensitivity tests | 06 |
+| Before trusting *any* observational estimate | Run diagnostics: SMD, AUC, ESS | Identification problems invalidate every downstream estimator equally | 07 |
